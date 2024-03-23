@@ -112,7 +112,9 @@ export default function AdminLayout(props: {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+              <DropdownMenuLabel className='text-xs'>
+                Settings
+              </DropdownMenuLabel>
               <SignoutButton />
               <ThemeSwitcher />
             </DropdownMenuContent>

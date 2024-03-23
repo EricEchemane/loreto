@@ -15,14 +15,19 @@ const icons = [
   'power_settings_new',
   'dark_mode',
   'light_mode',
+  'group',
 ] as const
 
+export type MaterialIconName = (typeof icons)[number]
+
 export default function MaterialIcon(props: {
-  name: (typeof icons)[number]
+  name: MaterialIconName
   className?: string
 }) {
   return (
-    <span className={cn('material-symbols-outlined', props.className)}>
+    <span
+      className={cn('material-symbols-outlined text-[20px]', props.className)}
+    >
       {props.name}
     </span>
   )

@@ -20,7 +20,7 @@ export default function AdminNavigationLink(props: {
         className='w-full justify-start'
       >
         <MaterialIcon
-          name='dashboard'
+          name={props.materialIconName}
           className='mr-2'
         />
         {props.label}
