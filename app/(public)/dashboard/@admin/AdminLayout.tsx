@@ -18,6 +18,7 @@ import {
 import { Session } from 'next-auth'
 import SignoutButton from '../SignoutButton'
 import { ThemeSwitcher } from '../ThemeSwitcher'
+import AdminNavigationLink from './AdminNavigations'
 
 export default function AdminLayout(props: {
   children: ReactNode
@@ -49,109 +50,53 @@ export default function AdminLayout(props: {
         </div>
 
         <nav className='flex flex-col gap-1'>
-          <Link href={'/dashboard/home'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='dashboard'
-                className='mr-2'
-              />
-              Dashboard
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Dashboard'
+            href='/dashboard/home'
+            materialIconName='dashboard'
+          />
 
-          <Link href={'/dashboard/apartments'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='other_houses'
-                className='mr-2'
-              />
-              Apartments
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Apartments'
+            href='/dashboard/apartments'
+            materialIconName='other_houses'
+          />
 
-          <Link href={'/dashboard/auditlogs'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='person_edit'
-                className='mr-2'
-              />
-              Audit Logs
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Audit Logs'
+            href='/dashboard/auditlogs'
+            materialIconName='person_edit'
+          />
 
-          <Link href={'/box'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='package_2'
-                className='mr-2'
-              />
-              Box Packaging
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Box Packaging'
+            href='/dashboard/box'
+            materialIconName='package_2'
+          />
 
-          <Link href={'/dashboard/accounts'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='manage_accounts'
-                className='mr-2'
-              />
-              Manage Accounts
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Manage Accounts'
+            href='/dashboard/accounts'
+            materialIconName='manage_accounts'
+          />
 
-          <Link href={'/dashboard/orders'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='orders'
-                className='mr-2'
-              />
-              Orders
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Orders'
+            href='/dashboard/orders'
+            materialIconName='orders'
+          />
 
-          <Link href={'/dashboard/transactions'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='receipt_long'
-                className='mr-2'
-              />
-              Transactions
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Transactions'
+            href='/dashboard/transactions'
+            materialIconName='receipt_long'
+          />
 
-          <Link href={'/dashboard/vehicles'}>
-            <Button
-              variant={'ghost'}
-              className='w-full justify-start'
-            >
-              <MaterialIcon
-                name='local_shipping'
-                className='mr-2'
-              />
-              Vehicles
-            </Button>
-          </Link>
+          <AdminNavigationLink
+            label='Vehicles'
+            href='/dashboard/vehicles'
+            materialIconName='local_shipping'
+          />
         </nav>
 
         <div className='flex items-center justify-between absolute bottom-0 right-0 left-0 p-4'>
