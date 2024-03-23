@@ -20,7 +20,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   session: {
-    maxAge: 1400,
+    maxAge: 3600,
   },
   secret: nextAuthSecret,
   callbacks: {

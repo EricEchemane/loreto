@@ -25,7 +25,10 @@ export default async function Navbar() {
     return (
       <nav className='flex gap-4 items-center max-w-4xl m-auto p-3'>
         {HomeLinkTitle}
-        <div className='space-x-2 ml-auto'>
+        <div className='gap-8 ml-auto flex items-center'>
+          <Link href={'/apartments'}>Apartments</Link>
+          <Link href={'/vehicles/booking'}>Book a Vehicle</Link>
+          <Link href={'/vehicles/booking'}>Custom Box</Link>
           <SignInButton />
         </div>
       </nav>
