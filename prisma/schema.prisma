@@ -169,12 +169,13 @@ model Vehicle {
   createdAt  DateTime @default(now())
   modifiedAt DateTime @updatedAt
 
-  name            String   @unique
-  model           String
-  purchaseDate    DateTime
-  lastMaintenance DateTime
-  photoUrl        String
-  plateNumber     String
+  name              String    @unique
+  model             String
+  purchaseDate      DateTime
+  lastMaintenance   DateTime?
+  photoUrl          String
+  plateNumber       String
+  serviceFeePerHour Float
 
   // 1: Available
   // 2: Booked
