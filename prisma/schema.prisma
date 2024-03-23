@@ -136,34 +136,6 @@ model Transaction {
   @@index([fromUserId])
 }
 
-model AuditLog {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
-  remark String?
-
-  // 1: user
-  // 2: box
-  // 3: boxOrder
-  // 4: transaction
-  // 5: audit
-  affectedTable Int
-
-  // 1: create
-  // 2: update
-  // 3: delete
-  action Int
-
-  actor   User   @relation(fields: [actorId], references: [id])
-  actorId String
-
-  // the id of the document that was either created, updated, or deleted
-  // either a box, user, boxOrder, or transaction
-  affectedRowId String
-
-  @@index([actorId, affectedRowId])
-}
-
 model Vehicle {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
@@ -219,4 +191,34 @@ model Booking {
   transactionId String
 
   @@index([vehicleId, bookerId, transactionId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  remark String?
+
+  // 1: user
+  // 2: box
+  // 3: boxOrder
+  // 4: transaction
+  // 5: audit
+  // 6: Vehicle
+  // 7: Booking
+  affectedTable Int
+
+  // 1: create
+  // 2: update
+  // 3: delete
+  action Int
+
+  actor   User   @relation(fields: [actorId], references: [id])
+  actorId String
+
+  // the id of the document that was either created, updated, or deleted
+  // either a box, user, boxOrder, or transaction
+  affectedRowId String
+
+  @@index([actorId, affectedRowId])
 }
