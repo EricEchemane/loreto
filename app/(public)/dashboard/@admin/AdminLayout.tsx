@@ -15,18 +15,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/common/configs/auth'
-import { redirect } from 'next/navigation'
+import { Session } from 'next-auth'
 import SignoutButton from '../SignoutButton'
 import { ThemeSwitcher } from '../ThemeSwitcher'
 
-export default async function AdminLayout(props: { children: ReactNode }) {
-  const session = await getServerSession(authOptions)
-  const user = session?.user
-  if (!user) {
-    redirect('/')
-  }
+export default function AdminLayout(props: {
+  children: ReactNode
+  user: Session['user']
+}) {
+  const user = props.user
 
   return (
     <main className='grid grid-cols-[auto_1fr]'>
@@ -52,7 +49,7 @@ export default async function AdminLayout(props: { children: ReactNode }) {
         </div>
 
         <nav className='flex flex-col gap-1'>
-          <Link href={'/dashboard'}>
+          <Link href={'/dashboard/home'}>
             <Button
               variant={'ghost'}
               className='w-full justify-start'

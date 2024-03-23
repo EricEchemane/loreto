@@ -24,7 +24,7 @@ export default async function Navbar() {
   const getAction = () => {
     if (!session?.user) return <SignInButton />
     return (
-      <Link href={'/dashboard'}>
+      <Link href={'/dashboard/home'}>
         <Button>Dashboard</Button>
       </Link>
     )

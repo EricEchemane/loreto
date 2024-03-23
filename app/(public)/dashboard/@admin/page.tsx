@@ -1,10 +1,5 @@
-import AdminLayout from './AdminLayout'
-import PageUnderConstruction from '@/components/shared/PageUnderConstruction'
+import { redirect } from 'next/navigation'
 
 export default function AdminPage() {
-  return (
-    <AdminLayout>
-      <PageUnderConstruction pageName='Dashboard Page' />
-    </AdminLayout>
-  )
+  redirect('/dashboard/home')
 }
