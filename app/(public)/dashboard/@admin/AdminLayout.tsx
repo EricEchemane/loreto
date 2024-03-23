@@ -18,7 +18,8 @@ import {
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/common/configs/auth'
 import { redirect } from 'next/navigation'
-import SignoutButton from './SignoutButton'
+import SignoutButton from '../SignoutButton'
+import { ThemeSwitcher } from '../ThemeSwitcher'
 
 export default async function AdminLayout(props: { children: ReactNode }) {
   const session = await getServerSession(authOptions)
@@ -171,6 +172,7 @@ export default async function AdminLayout(props: { children: ReactNode }) {
             <DropdownMenuContent>
               <DropdownMenuLabel>Settings</DropdownMenuLabel>
               <SignoutButton />
+              <ThemeSwitcher />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

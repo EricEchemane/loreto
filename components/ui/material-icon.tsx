@@ -13,6 +13,8 @@ const icons = [
   'settings',
   'dashboard',
   'power_settings_new',
+  'dark_mode',
+  'light_mode',
 ] as const
 
 export default function MaterialIcon(props: {
