@@ -12,6 +12,9 @@ async function main() {
         username: 'eric echemane',
         role: 1,
         verified: true,
+        firstName: 'Eric',
+        lastName: 'Echemane',
+        contactNumber: '08123456789',
       },
     ],
   })

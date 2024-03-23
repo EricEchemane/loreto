@@ -1,14 +1,15 @@
 import { Button } from '@/components/ui/button'
-import { ExitIcon } from '@radix-ui/react-icons'
+
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import SignOutButton from '../SignOutButton'
 import Link from 'next/link'
+import { authOptions } from '@/common/configs/auth'
 
 export default async function DashboardPage(props: { children: ReactNode }) {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session?.user) {
     redirect('/signin')
@@ -18,6 +19,7 @@ export default async function DashboardPage(props: { children: ReactNode }) {
 
   return (
     <div className='max-w-4xl m-auto'>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
       <nav className='sticky top-0 p-3 flex items-center'>
         <div className='flex items-center gap-2'>
           <Image
