@@ -1,10 +1,10 @@
+import AdminLayout from './AdminLayout'
 import PageUnderConstruction from '@/components/shared/PageUnderConstruction'
-import React from 'react'
 
-export default function AdminDashboard() {
+export default function AdminPage() {
   return (
-    <div>
-      <PageUnderConstruction />
-    </div>
+    <AdminLayout>
+      <PageUnderConstruction pageName='Dashboard Page' />
+    </AdminLayout>
   )
 }
