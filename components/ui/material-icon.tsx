@@ -12,6 +12,7 @@ const icons = [
   'manage_accounts',
   'settings',
   'dashboard',
+  'power_settings_new',
 ] as const
 
 export default function MaterialIcon(props: {

@@ -11,6 +11,15 @@ import { Badge } from '@/components/ui/badge'
 import { UserRoleLabel } from '@/common/constants/business'
 import MaterialIcon from '@/components/ui/material-icon'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+
+import SignoutButton from './@admin/SIgnoutButton'
+
 export default async function DashboardPage(props: {
   children: ReactNode
   admin: ReactNode
@@ -21,7 +30,7 @@ export default async function DashboardPage(props: {
   const user = session?.user
 
   if (!user) {
-    redirect('/signin')
+    redirect('/')
   }
 
   const PageMap: Record<UserRole, ReactNode> = {
@@ -161,12 +170,21 @@ export default async function DashboardPage(props: {
 
         <div className='flex items-center justify-between absolute bottom-0 right-0 left-0 p-4'>
           <div className='text-muted-foreground text-sm'>Settings</div>
-          <Button
-            variant={'ghost'}
-            size={'icon'}
-          >
-            <MaterialIcon name='settings' />
-          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={'ghost'}
+                size={'icon'}
+              >
+                <MaterialIcon name='settings' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+              <SignoutButton />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
       {PageMap[user.role as UserRole]}
