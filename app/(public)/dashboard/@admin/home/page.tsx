@@ -1,15 +1,18 @@
+import PageUnderConstruction from '@/components/shared/PageUnderConstruction'
+
 import { prisma } from '@/common/configs/prisma'
 import { UserRole, UserStatus } from '@/common/enums/enums.db'
-import PageUnderConstruction from '@/components/shared/PageUnderConstruction'
-import { Card } from '@/components/ui/card'
 import MaterialIcon, { MaterialIconName } from '@/components/ui/material-icon'
+import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ReactNode } from 'react'
 
 export default async function Page() {
   const [boxOrders, bookings, transactions, activeCustomers] =
     await Promise.all([
-      prisma.boxOrder.findMany(),
+      prisma.boxOrder.findMany({
+        orderBy: { createdAt: 'desc' },
+      }),
       prisma.booking.findMany(),
       prisma.transaction.findMany({
         orderBy: { createdAt: 'desc' },
@@ -78,7 +81,7 @@ const CardOverviewItem = (props: {
     <Card className='col-span-3 p-5'>
       <div className='flex items-center justify-between mb-2'>
         <div className='text-sm capitalize'>{props.label}</div>
-        <MaterialIcon name='package_2' />
+        <MaterialIcon name={props.materialIconName} />
       </div>
       <h3>{props.value}</h3>
     </Card>

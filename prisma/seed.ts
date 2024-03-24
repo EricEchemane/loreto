@@ -1,12 +1,7 @@
-import {
-  Booking,
-  Box,
-  Prisma,
-  PrismaClient,
-  Transaction,
-  User,
-} from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
+
 import { faker } from '@faker-js/faker'
+
 import {
   AuditAction,
   AuditAffectedTable,
@@ -38,6 +33,22 @@ async function main() {
           firstName: 'Eric',
           lastName: 'Echemane',
           contactNumber: '08123456789',
+        },
+        {
+          email: 'cashmireloreto@gmail.com',
+          username: 'cashie loreto',
+          role: 1,
+          verified: true,
+          firstName: 'Cashie',
+          lastName: 'Loreto',
+        },
+        {
+          email: 'mjcabaluna15@gmail.com',
+          username: 'Mike Jefferson',
+          role: 1,
+          verified: true,
+          firstName: 'Mike',
+          lastName: 'Cabaluna',
         },
         ...Array.from({ length: numberOfUsers }).map(
           () =>
@@ -164,6 +175,7 @@ async function main() {
               boxId: faker.helpers.arrayElement(boxes).id,
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.InCart,
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -173,6 +185,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.OrderCompleted,
               completedAt: faker.date.recent({ days: 10 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -182,6 +195,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.OrderReceived,
               receivedAt: faker.date.recent({ days: 10 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -191,6 +205,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.OutForDelivery,
               outForDeliveryAt: new Date(),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -200,6 +215,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.PaymentInfoConfirmed,
               paymentConfirmedAt: faker.date.recent({ days: 10 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -209,6 +225,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.Placed,
               placedAt: faker.date.recent({ days: 2 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 10 }).map(
@@ -218,6 +235,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.ProcessingOrder,
               processingAt: faker.date.recent({ days: 3 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
         ...Array.from({ length: 5 }).map(
@@ -227,6 +245,7 @@ async function main() {
               userId: faker.helpers.arrayElement(users).id,
               status: BoxOrderStatus.cancelled,
               cancelledAt: faker.date.recent({ days: 10 }),
+              createdAt: faker.date.recent({ days: 30 }),
             } as Prisma.BoxOrderCreateManyInput)
         ),
       ],

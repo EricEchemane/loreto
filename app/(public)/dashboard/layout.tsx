@@ -3,6 +3,11 @@ import { redirect } from 'next/navigation'
 import { ReactNode } from 'react'
 import { authOptions } from '@/common/configs/auth'
 import { UserRole } from '@/common/enums/enums.db'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+}
 
 export default async function DashboardPage(props: {
   children: ReactNode
