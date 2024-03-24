@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { Vehicle } from '@prisma/client'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import Image from 'next/image'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 
@@ -20,16 +21,20 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
     router.replace(`${pathname}?action=edit`)
   }
   const discard = () => {
-    router.push(pathname)
+    router.replace(pathname)
   }
 
   return (
     <div className='bg-neutral-50'>
       <header className='p-4 flex items-center gap-2 justify-between'>
-        <div className='flex items-center gap-3'>
-          <button onClick={() => router.back()}>
+        <div className='flex items-center gap-2'>
+          <Button
+            onClick={() => router.back()}
+            variant={'ghost'}
+            size={'icon'}
+          >
             <ArrowLeftIcon />
-          </button>
+          </Button>
           <h3 className='capitalize'>Vehicle Details</h3>
         </div>
 
@@ -52,13 +57,18 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
       </header>
 
       <div className='grid grid-cols-12 p-4 gap-4'>
-        <Card className='col-span-6'>
+        <Card className='col-span-6 shadow-none'>
           <CardHeader>
             <CardTitle className='text-base'>Basic Information</CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='space-y-1'>
-              <Label htmlFor='vehicle_name'>Vehicle Name</Label>
+              <Label
+                htmlFor='vehicle_name'
+                className='small'
+              >
+                Vehicle Name
+              </Label>
               <Input
                 ref={(ref) => !readOnly && ref?.focus()}
                 id='vehicle_name'
@@ -86,6 +96,17 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               />
             </div>
           </CardContent>
+        </Card>
+
+        <Card className='col-span-6 relative shadow-none'>
+          <Image
+            fill
+            priority
+            alt={data.name}
+            src={data.photoUrl}
+            className='object-contain rounded-md'
+            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          />
         </Card>
       </div>
     </div>
