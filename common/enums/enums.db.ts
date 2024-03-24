@@ -72,3 +72,11 @@ export enum BookStatus {
   OnTheRoad,
   Completed,
 }
+
+export enum VehicleStatus {
+  Available = 1,
+  Booked,
+  Rented,
+  OnTheRoad,
+  UnderMaintenance,
+}
