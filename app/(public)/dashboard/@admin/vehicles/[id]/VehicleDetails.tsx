@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { Vehicle } from '@prisma/client'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 
@@ -16,7 +17,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   const readOnly = searchParams.get('action') !== 'edit'
 
   const startEditing = () => {
-    router.push(`${pathname}?action=edit`)
+    router.replace(`${pathname}?action=edit`)
   }
   const discard = () => {
     router.push(pathname)
@@ -25,7 +26,12 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   return (
     <div className='bg-neutral-50'>
       <header className='p-4 flex items-center gap-2 justify-between'>
-        <h3 className='capitalize'>Vehicle Details</h3>
+        <div className='flex items-center gap-3'>
+          <button onClick={() => router.back()}>
+            <ArrowLeftIcon />
+          </button>
+          <h3 className='capitalize'>Vehicle Details</h3>
+        </div>
 
         <div className={cn({ hidden: readOnly }, 'space-x-3')}>
           <Button disabled>Save</Button>
