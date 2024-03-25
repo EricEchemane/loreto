@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import { Button } from '@/components/ui/button'
@@ -10,6 +9,7 @@ import { Vehicle } from '@prisma/client'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
+import { VehicleStatusLabel } from '@/common/constants/business'
 
 import {
   Select,
@@ -18,16 +18,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { VehicleStatusLabel } from '@/common/constants/business'
+
+import Link from 'next/link'
+import StatusWithDot from '@/components/shared/StatusWithDot'
+import { VehicleStatusColor } from '@/common/constants/status-colors'
+import { VehicleStatus } from '@/common/enums/enums.db'
+import ImageUpload from '@/components/shared/ImageUpload'
+
 export default function VehicleDetails({ data }: { data: Vehicle }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
   const readOnly = searchParams.get('action') !== 'edit'
 
-  const startEditing = () => {
-    router.replace(`${pathname}?action=edit`)
-  }
   const discard = () => {
     router.replace(pathname)
   }
@@ -56,12 +59,11 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
           </Button>
         </div>
 
-        <Button
-          className={cn({ hidden: !readOnly })}
-          onClick={startEditing}
-        >
-          Edit
-        </Button>
+        <Link href={`/dashboard/vehicles/${data.id}?action=edit`} className={cn({ hidden: !readOnly })}>
+          <Button>
+            Edit
+          </Button>
+        </Link>
       </header>
 
       <div className='grid grid-cols-12 p-4 gap-4 w-[850px] m-auto'>
@@ -139,12 +141,15 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </div>
 
         <div className='col-span-5 space-y-4'>
-          <img
-            alt={data.name}
-            src={data.photoUrl}
-            className='rounded-xl border'
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-          />
+          <div className='mt-1'>
+            <ImageUpload
+              hidden={readOnly}
+              initialImageSrc={data.photoUrl}
+              onImageChange={function(imageSrc: string): void {
+                console.log(imageSrc)
+              }}
+              inputName={'photoUrl'} />
+          </div>
 
           <Card className='shadow-none p-5'>
             <div className='space-y-1'>
@@ -162,7 +167,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                       key={key}
                       value={key}
                     >
-                      {value}
+                      <StatusWithDot label={value} color={VehicleStatusColor[+key as VehicleStatus]} />
                     </SelectItem>
                   ))}
                 </SelectContent>
