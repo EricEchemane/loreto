@@ -5,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn, formatDate } from '@/lib/utils'
-import { Vehicle } from '@prisma/client'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
@@ -25,15 +24,35 @@ import { VehicleStatusColor } from '@/common/constants/status-colors'
 import { VehicleStatus } from '@/common/enums/enums.db'
 import ImageUpload from '@/components/shared/ImageUpload'
 
+import { useForm, SubmitHandler } from "react-hook-form"
+import { Vehicle } from '@prisma/client'
+import { format } from 'date-fns'
+
+type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate'> & {
+  lastMaintenance: string | undefined
+  purchaseDate: string | undefined
+}>
+
 export default function VehicleDetails({ data }: { data: Vehicle }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
   const readOnly = searchParams.get('action') !== 'edit'
 
+  const form = useForm<Partial<UpdateVehicleInput>>({
+    defaultValues: {
+      ...data,
+      lastMaintenance: data.lastMaintenance ? format(data.lastMaintenance, 'yyyy-MM-dd') : undefined,
+      purchaseDate: data.purchaseDate ? format(data.purchaseDate, 'yyyy-MM-dd') : undefined,
+    },
+  })
+
   const discard = () => {
     router.replace(pathname)
+    form.reset()
   }
+
+  const onSubmit: SubmitHandler<UpdateVehicleInput> = (data) => console.log(data)
 
   return (
     <div className='bg-neutral-50 dark:bg-neutral-900'>
@@ -66,7 +85,9 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </Link>
       </header>
 
-      <div className='grid grid-cols-12 p-4 gap-4 w-[850px] m-auto'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='grid grid-cols-12 p-4 gap-4 w-[850px] m-auto'>
         <div className='col-span-7 space-y-4'>
           <Card className='shadow-none'>
             <CardHeader>
@@ -81,11 +102,11 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                   Vehicle Name
                 </Label>
                 <Input
-                  ref={(ref) => !readOnly && ref?.focus()}
                   id='vehicle_name'
-                  defaultValue={data.name}
-                  name='name'
                   readOnly={readOnly}
+                  {...form.register('name')}
+                  defaultValue={data.name}
+                  ref={(ref) => !readOnly && ref?.focus()}
                 />
               </div>
               <div className='space-y-1'>
@@ -93,7 +114,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                 <Input
                   id='model'
                   defaultValue={data.model}
-                  name='model'
+                  {...form.register('model')}
                   readOnly={readOnly}
                 />
               </div>
@@ -102,7 +123,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                 <Input
                   id='plateNumber'
                   defaultValue={data.plateNumber}
-                  name='plateNumber'
+                  {...form.register('plateNumber')}
                   readOnly={readOnly}
                 />
               </div>
@@ -113,26 +134,22 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             <CardHeader>
               <CardTitle className='text-base'>History</CardTitle>
             </CardHeader>
-            <CardContent className='space-y-4'>
+            <CardContent className='grid grid-cols-2 place-items-start gap-4'>
               <div className='space-y-1'>
                 <Label htmlFor='lastMaintenance'>Last Maintenance</Label>
                 <Input
-                  id='lastMaintenance'
-                  defaultValue={
-                    data.lastMaintenance
-                      ? formatDate(data.lastMaintenance.toString())
-                      : undefined
-                  }
-                  name='lastMaintenance'
+                  type='date'
+                  placeholder='Last maintenance'
+                  {...form.register('lastMaintenance')}
                   readOnly={readOnly}
                 />
               </div>
               <div className='space-y-1'>
                 <Label htmlFor='purchaseDate'>Purchased On</Label>
                 <Input
+                  type='date'
                   id='purchaseDate'
-                  defaultValue={formatDate(data.purchaseDate.toString())}
-                  name='purchaseDate'
+                  {...form.register('purchaseDate')}
                   readOnly={readOnly}
                 />
               </div>
@@ -175,7 +192,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             </div>
           </Card>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

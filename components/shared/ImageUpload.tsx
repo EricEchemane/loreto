@@ -52,6 +52,7 @@ export default function ImageUpload(props: {
         <div className="flex items-center gap-2">
           <Button
             size={'sm'}
+            type='button'
             variant={'outline'}
             onClick={() => fileInputRef.current?.click()}>
             <UploadIcon className="mr-2" />
@@ -59,6 +60,7 @@ export default function ImageUpload(props: {
           </Button>
           <Button
             size={'sm'}
+            type='button'
             variant={'ghost'}
             disabled={props.initialImageSrc === imageSrc}
             onClick={() => setImageSrc(props.initialImageSrc)}>
