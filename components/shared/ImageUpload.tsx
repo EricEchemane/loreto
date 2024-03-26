@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 export default function ImageUpload(props: {
   initialImageSrc: string
-  onImageChange: (imageSrc: string) => void
+  onImageChange: (params: { imageSrc?: string; file?: File }) => void
   inputName: string
   hidden?: boolean
 }) {
@@ -31,7 +31,7 @@ export default function ImageUpload(props: {
             const reader = new FileReader()
             reader.onload = (e) => {
               const imageSrc = e.target?.result as string
-              props.onImageChange(imageSrc)
+              props.onImageChange({ file, imageSrc })
               setImageSrc(imageSrc)
             }
             reader.readAsDataURL(file)

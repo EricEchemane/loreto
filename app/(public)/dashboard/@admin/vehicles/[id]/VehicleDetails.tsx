@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn, formatDate } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
@@ -28,9 +28,10 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { Vehicle } from '@prisma/client'
 import { format } from 'date-fns'
 
-type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate'> & {
+type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'photoUrl'> & {
   lastMaintenance: string | undefined
   purchaseDate: string | undefined
+  photoUrl: File | string | undefined
 }>
 
 export default function VehicleDetails({ data }: { data: Vehicle }) {
@@ -55,13 +56,17 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   const onSubmit: SubmitHandler<UpdateVehicleInput> = (data) => console.log(data)
 
   return (
-    <div className='bg-neutral-50 dark:bg-neutral-900'>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className='bg-neutral-50 dark:bg-neutral-900'>
+
       <header className='p-4 flex items-center gap-2 justify-between'>
         <div className='flex items-center gap-2'>
           <Button
             onClick={() => router.back()}
             variant={'ghost'}
             size={'icon'}
+            type='button'
           >
             <ArrowLeftIcon />
           </Button>
@@ -69,7 +74,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </div>
 
         <div className={cn({ hidden: readOnly }, 'space-x-3')}>
-          <Button disabled>Save</Button>
+          <Button disabled={form.formState.isDirty == false}>Save</Button>
           <Button
             onClick={discard}
             variant={'outline'}
@@ -79,15 +84,13 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </div>
 
         <Link href={`/dashboard/vehicles/${data.id}?action=edit`} className={cn({ hidden: !readOnly })}>
-          <Button>
+          <Button type='button'>
             Edit
           </Button>
         </Link>
       </header>
 
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='grid grid-cols-12 p-4 gap-4 w-[850px] m-auto'>
+      <div className='grid grid-cols-12 p-4 gap-4 w-[850px] m-auto'>
         <div className='col-span-7 space-y-4'>
           <Card className='shadow-none'>
             <CardHeader>
@@ -162,8 +165,8 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             <ImageUpload
               hidden={readOnly}
               initialImageSrc={data.photoUrl}
-              onImageChange={function(imageSrc: string): void {
-                console.log(imageSrc)
+              onImageChange={function({ file }): void {
+                form.setValue('photoUrl', file)
               }}
               inputName={'photoUrl'} />
           </div>
@@ -174,6 +177,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               <Select
                 defaultValue={data.status.toString()}
                 disabled={readOnly}
+                onValueChange={(value) => form.setValue('status', +value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder='Status' />
@@ -192,7 +196,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             </div>
           </Card>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   )
 }

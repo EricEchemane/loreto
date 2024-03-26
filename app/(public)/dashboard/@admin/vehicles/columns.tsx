@@ -2,7 +2,6 @@
 
 import { VehicleStatusLabel } from '@/common/constants/business'
 import { VehicleStatus } from '@/common/enums/enums.db'
-import { formatDate } from '@/lib/utils'
 import { Vehicle } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -18,6 +17,7 @@ import {
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 import Link from 'next/link'
+import { format } from 'date-fns'
 
 export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
   {
@@ -54,7 +54,7 @@ export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
     header: 'Last Maintenance',
     cell: ({ row }) => {
       const date = row.original.lastMaintenance
-      return date ? formatDate(date.toString()) : ''
+      return date ? format(date, 'dd MMMM yyyy') : ''
     },
   },
   {
