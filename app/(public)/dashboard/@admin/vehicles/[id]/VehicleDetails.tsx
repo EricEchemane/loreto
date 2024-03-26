@@ -27,11 +27,13 @@ import ImageUpload from '@/components/shared/ImageUpload'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Vehicle } from '@prisma/client'
 import { format } from 'date-fns'
+import { updateVehicleAction } from './vehicle-detail-actions'
+import { useState } from 'react'
 
-type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'photoUrl'> & {
+export type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'photoUrl'> & {
   lastMaintenance: string | undefined
   purchaseDate: string | undefined
-  photoUrl: File | string | undefined
+  photoUrl: string | undefined
 }>
 
 export default function VehicleDetails({ data }: { data: Vehicle }) {
@@ -39,6 +41,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   const router = useRouter()
   const pathname = usePathname()
   const readOnly = searchParams.get('action') !== 'edit'
+  const [isSaving, setIsSaving] = useState(false)
 
   const form = useForm<Partial<UpdateVehicleInput>>({
     defaultValues: {
@@ -46,6 +49,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
       lastMaintenance: data.lastMaintenance ? format(data.lastMaintenance, 'yyyy-MM-dd') : undefined,
       purchaseDate: data.purchaseDate ? format(data.purchaseDate, 'yyyy-MM-dd') : undefined,
     },
+    disabled: isSaving,
   })
 
   const discard = () => {
@@ -53,7 +57,27 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
     form.reset()
   }
 
-  const onSubmit: SubmitHandler<UpdateVehicleInput> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<UpdateVehicleInput> = async (data) => {
+    // console.log(data)
+    setIsSaving(true)
+
+    try {
+      const res = await updateVehicleAction(data)
+      console.log(res)
+      if (res.status === 201) { }
+      // if the photo changed, upload the new photo to cloudinary
+      // if the photo is a string, it means the photo was not changed
+      // if the upload is successful, update the vehicle with the new photo url
+      // save the vehicle to the database with the new photo url
+      // if saved successfully, delete the old photo from cloudinary
+      // else delte the new uploaded photo from cloudinary
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSaving(false)
+    }
+
+  }
 
   return (
     <form
@@ -67,6 +91,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             variant={'ghost'}
             size={'icon'}
             type='button'
+            disabled={isSaving}
           >
             <ArrowLeftIcon />
           </Button>
@@ -74,8 +99,12 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </div>
 
         <div className={cn({ hidden: readOnly }, 'space-x-3')}>
-          <Button disabled={form.formState.isDirty == false}>Save</Button>
+          <Button disabled={form.formState.isDirty == false || isSaving}>
+            Save
+          </Button>
+
           <Button
+            type='button'
             onClick={discard}
             variant={'outline'}
           >
@@ -84,7 +113,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         </div>
 
         <Link href={`/dashboard/vehicles/${data.id}?action=edit`} className={cn({ hidden: !readOnly })}>
-          <Button type='button'>
+          <Button type='button' disabled={isSaving}>
             Edit
           </Button>
         </Link>
@@ -163,10 +192,11 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         <div className='col-span-5 space-y-4'>
           <div className='mt-1'>
             <ImageUpload
+              disabled={isSaving}
               hidden={readOnly}
               initialImageSrc={data.photoUrl}
-              onImageChange={function({ file }): void {
-                form.setValue('photoUrl', file)
+              onImageChange={function({ imageSrc }): void {
+                form.setValue('photoUrl', imageSrc, { shouldDirty: true })
               }}
               inputName={'photoUrl'} />
           </div>
@@ -176,8 +206,8 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               <Label>Status</Label>
               <Select
                 defaultValue={data.status.toString()}
-                disabled={readOnly}
-                onValueChange={(value) => form.setValue('status', +value)}
+                disabled={readOnly || isSaving}
+                onValueChange={(value) => form.setValue('status', +value, { shouldDirty: true })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder='Status' />

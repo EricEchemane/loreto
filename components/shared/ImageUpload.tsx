@@ -10,6 +10,7 @@ export default function ImageUpload(props: {
   onImageChange: (params: { imageSrc?: string; file?: File }) => void
   inputName: string
   hidden?: boolean
+  disabled?: boolean
 }) {
 
   const [imageSrc, setImageSrc] = useState(props.initialImageSrc)
@@ -18,6 +19,7 @@ export default function ImageUpload(props: {
   return (
     <div className='relative overflow-hidden rounded-lg bg-white border'>
       <input
+        disabled={props.disabled}
         hidden
         ref={fileInputRef}
         type='file'
@@ -54,6 +56,7 @@ export default function ImageUpload(props: {
             size={'sm'}
             type='button'
             variant={'outline'}
+            disabled={props.disabled}
             onClick={() => fileInputRef.current?.click()}>
             <UploadIcon className="mr-2" />
             Upload
@@ -62,7 +65,7 @@ export default function ImageUpload(props: {
             size={'sm'}
             type='button'
             variant={'ghost'}
-            disabled={props.initialImageSrc === imageSrc}
+            disabled={props.initialImageSrc === imageSrc || props.disabled}
             onClick={() => setImageSrc(props.initialImageSrc)}>
             Reset
           </Button>
