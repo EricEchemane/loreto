@@ -61,7 +61,6 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   }
 
   const onSubmit: SubmitHandler<UpdateVehicleInput> = async (data) => {
-    // console.log(data)
     setIsSaving(true)
 
     try {

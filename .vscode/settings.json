@@ -15,11 +15,5 @@
     ".*class.*",
     ".*Class.*",
     ".*Classes.*"
-  ],
-  "[prisma]": {
-    "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  ]
 }

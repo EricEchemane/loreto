@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { ArrowDownIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 import Link from 'next/link'
 import { format } from 'date-fns'
@@ -58,7 +58,17 @@ export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
   },
   {
     accessorKey: 'lastMaintenance',
-    header: 'Last Maintenance',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Last Maintenance
+          <ArrowDownIcon className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const date = row.original.lastMaintenance
       return date ? format(date, 'MMMM dd yyyy') : ''
