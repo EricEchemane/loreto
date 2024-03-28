@@ -2,18 +2,39 @@
 
 import { cloud } from "@/common/configs/cloud";
 import { UpdateVehicleInput } from "./VehicleDetails";
+import { prisma } from "@/common/configs/prisma";
 
 export async function updateVehicleAction(data: UpdateVehicleInput) {
-  if (typeof data.photoUrl === 'string') {
-    const cloudResponse = await cloud.uploader.upload(data.photoUrl, {
-      public_id: `vehicle-${data.id}`,
-      overwrite: true,
-      filename_override: data.id,
-      folder: 'loreto',
-    })
-    // console.log('cloudResponse', cloudResponse)
-    return { status: 201, data: { photoUrl: cloudResponse.secure_url } }
-  }
+  try {
+    let photoUrl: string | undefined;
 
-  return { status: 201 }
+    if (data.newPhotoUrl) {
+      const cloudResponse = await cloud.uploader.upload(data.newPhotoUrl, {
+        public_id: `vehicle-${data.name}`,
+        overwrite: true,
+        filename_override: `vehicle-${data.name}`,
+        folder: 'loreto',
+      })
+      photoUrl = cloudResponse.secure_url
+    }
+
+    delete data.newPhotoUrl
+
+    await prisma.vehicle.update({
+      where: { id: data.id },
+      data: {
+        ...data,
+        photoUrl: photoUrl ? photoUrl : data.photoUrl,
+        serviceFeePerHour: data.serviceFeePerHour ? parseFloat(data.serviceFeePerHour) : undefined,
+        purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : undefined,
+        lastMaintenance: data.lastMaintenance ? new Date(data.lastMaintenance) : undefined,
+      },
+    })
+
+    return { status: 201 }
+  }
+  catch (error) {
+    console.error(error)
+    return { status: 500 }
+  }
 }

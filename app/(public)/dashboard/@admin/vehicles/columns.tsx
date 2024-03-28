@@ -18,6 +18,8 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import Image from 'next/image'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import StatusWithDot from '@/components/shared/StatusWithDot'
+import { VehicleStatusColor } from '@/common/constants/status-colors'
 
 export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
   {
@@ -47,14 +49,19 @@ export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => VehicleStatusLabel[row.original.status as VehicleStatus],
+    cell: ({ row }) => {
+      const status = row.original.status as VehicleStatus
+      return <StatusWithDot
+        label={VehicleStatusLabel[status]}
+        color={VehicleStatusColor[status]} />
+    },
   },
   {
     accessorKey: 'lastMaintenance',
     header: 'Last Maintenance',
     cell: ({ row }) => {
       const date = row.original.lastMaintenance
-      return date ? format(date, 'dd MMMM yyyy') : ''
+      return date ? format(date, 'MMMM dd yyyy') : ''
     },
   },
   {

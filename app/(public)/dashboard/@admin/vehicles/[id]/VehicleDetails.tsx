@@ -29,11 +29,13 @@ import { Vehicle } from '@prisma/client'
 import { format } from 'date-fns'
 import { updateVehicleAction } from './vehicle-detail-actions'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
-export type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'photoUrl'> & {
-  lastMaintenance: string | undefined
-  purchaseDate: string | undefined
-  photoUrl: string | undefined
+export type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'serviceFeePerHour'> & {
+  lastMaintenance?: string
+  purchaseDate?: string
+  newPhotoUrl?: string
+  serviceFeePerHour?: string
 }>
 
 export default function VehicleDetails({ data }: { data: Vehicle }) {
@@ -48,6 +50,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
       ...data,
       lastMaintenance: data.lastMaintenance ? format(data.lastMaintenance, 'yyyy-MM-dd') : undefined,
       purchaseDate: data.purchaseDate ? format(data.purchaseDate, 'yyyy-MM-dd') : undefined,
+      serviceFeePerHour: data.serviceFeePerHour?.toString(),
     },
     disabled: isSaving,
   })
@@ -63,14 +66,19 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
 
     try {
       const res = await updateVehicleAction(data)
-      console.log(res)
-      if (res.status === 201) { }
-      // if the photo changed, upload the new photo to cloudinary
-      // if the photo is a string, it means the photo was not changed
-      // if the upload is successful, update the vehicle with the new photo url
-      // save the vehicle to the database with the new photo url
-      // if saved successfully, delete the old photo from cloudinary
-      // else delte the new uploaded photo from cloudinary
+      if (res.status === 201) {
+        router.replace('/dashboard/vehicles')
+        router.refresh()
+        toast.success('Vehicle updated successfully')
+        return
+      }
+      toast('Something went wrong.', {
+        action:
+        {
+          label: 'Retry',
+          onClick: () => onSubmit(data)
+        }
+      })
     } catch (error) {
       console.error(error)
     } finally {
@@ -87,7 +95,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
       <header className='p-4 flex items-center gap-2 justify-between'>
         <div className='flex items-center gap-2'>
           <Button
-            onClick={() => router.back()}
+            onClick={() => router.replace('/dashboard/vehicles')}
             variant={'ghost'}
             size={'icon'}
             type='button'
@@ -98,8 +106,10 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
           <h3 className='capitalize'>Vehicle Details</h3>
         </div>
 
-        <div className={cn({ hidden: readOnly }, 'space-x-3')}>
-          <Button disabled={form.formState.isDirty == false || isSaving}>
+        <div className={cn('flex items-center gap-3', { 'hidden': readOnly })}>
+          <Button
+            loading={isSaving}
+            disabled={form.formState.isDirty == false || isSaving}>
             Save
           </Button>
 
@@ -107,6 +117,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             type='button'
             onClick={discard}
             variant={'outline'}
+            disabled={isSaving}
           >
             Discard
           </Button>
@@ -138,7 +149,6 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                   readOnly={readOnly}
                   {...form.register('name')}
                   defaultValue={data.name}
-                  ref={(ref) => !readOnly && ref?.focus()}
                 />
               </div>
               <div className='space-y-1'>
@@ -196,7 +206,7 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               hidden={readOnly}
               initialImageSrc={data.photoUrl}
               onImageChange={function({ imageSrc }): void {
-                form.setValue('photoUrl', imageSrc, { shouldDirty: true })
+                form.setValue('newPhotoUrl', imageSrc, { shouldDirty: true })
               }}
               inputName={'photoUrl'} />
           </div>
@@ -223,6 +233,19 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+          </Card>
+
+          <Card className='shadow-none p-5'>
+            <div className='space-y-1'>
+              <Label htmlFor='serviceFeePerHour'>Service Fee per hour</Label>
+              <div className='flex items-center gap-2'>
+                <span className='muted'>PHP</span>
+                <Input
+                  type='number'
+                  placeholder='Service Fee per hour'
+                  {...form.register('serviceFeePerHour')} />
+              </div>
             </div>
           </Card>
         </div>
