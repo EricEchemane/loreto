@@ -15,5 +15,6 @@
     ".*class.*",
     ".*Class.*",
     ".*Classes.*"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

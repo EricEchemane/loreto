@@ -4,15 +4,19 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Prisma } from '@prisma/client'
 import { useForm } from 'react-hook-form'
+import ImageUpload from '@/components/shared/ImageUpload'
 
-type CreateVehileInput = Prisma.VehicleCreateInput
+type NewVehicleInput = {
+  name: string
+  model: string
+  plateNumber: string
+}
 
 export default function NewVehicle() {
-  const form = useForm<CreateVehileInput>()
+  const form = useForm<NewVehicleInput>()
 
-  const onSubmit = async (data: CreateVehileInput) => {
+  const onSubmit = async (data: NewVehicleInput) => {
     console.log(data)
   }
 
@@ -37,24 +41,27 @@ export default function NewVehicle() {
                 <Label htmlFor='name'>Vehicle Name</Label>
                 <Input
                   id='name'
+                  required
                   {...form.register('name')}
-                  placeholder='Vehicle Name'
+                  placeholder='Enter vehicle name'
                 />
               </div>
               <div className='space-y-1'>
                 <Label htmlFor='model'>Vehicle Model</Label>
                 <Input
                   id='model'
+                  required
                   {...form.register('model')}
-                  placeholder='Vehicle Model'
+                  placeholder='Enter model'
                 />
               </div>
               <div className='space-y-1'>
                 <Label htmlFor='plateNumber'>Plate Number</Label>
                 <Input
                   id='plateNumber'
+                  required
                   {...form.register('plateNumber')}
-                  placeholder='Plate Number'
+                  placeholder='Enter plate number'
                 />
               </div>
             </CardContent>
@@ -64,7 +71,14 @@ export default function NewVehicle() {
         <div
           aria-label='right side'
           className='col-span-5 space-y-4'
-        ></div>
+        >
+          <div>
+            <ImageUpload
+              onImageChange={({ imageSrc }) => {}}
+              inputName={'photo'}
+            />
+          </div>
+        </div>
       </div>
     </form>
   )
