@@ -51,9 +51,12 @@ export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
     header: 'Status',
     cell: ({ row }) => {
       const status = row.original.status as VehicleStatus
-      return <StatusWithDot
-        label={VehicleStatusLabel[status]}
-        color={VehicleStatusColor[status]} />
+      return (
+        <StatusWithDot
+          label={VehicleStatusLabel[status]}
+          color={VehicleStatusColor[status]}
+        />
+      )
     },
   },
   {
@@ -61,16 +64,36 @@ export const vehiclesTableColumns: ColumnDef<Vehicle>[] = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          variant='ghost'
+          className='-translate-x-4'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Last Maintenance
-          <ArrowDownIcon className="ml-2 h-4 w-4" />
+          <ArrowDownIcon className='ml-2 h-4 w-4' />
         </Button>
       )
     },
     cell: ({ row }) => {
       const date = row.original.lastMaintenance
+      return date ? format(date, 'MMMM dd yyyy') : ''
+    },
+  },
+  {
+    accessorKey: 'purchaseDate',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          className='-translate-x-4'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Date Purchased
+          <ArrowDownIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const date = row.original.purchaseDate
       return date ? format(date, 'MMMM dd yyyy') : ''
     },
   },

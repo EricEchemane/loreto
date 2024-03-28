@@ -24,19 +24,21 @@ import { VehicleStatusColor } from '@/common/constants/status-colors'
 import { VehicleStatus } from '@/common/enums/enums.db'
 import ImageUpload from '@/components/shared/ImageUpload'
 
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { Vehicle } from '@prisma/client'
 import { format } from 'date-fns'
 import { updateVehicleAction } from './vehicle-detail-actions'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-export type UpdateVehicleInput = Partial<Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'serviceFeePerHour'> & {
-  lastMaintenance?: string
-  purchaseDate?: string
-  newPhotoUrl?: string
-  serviceFeePerHour?: string
-}>
+export type UpdateVehicleInput = Partial<
+  Omit<Vehicle, 'lastMaintenance' | 'purchaseDate' | 'serviceFeePerHour'> & {
+    lastMaintenance?: string
+    purchaseDate?: string
+    newPhotoUrl?: string
+    serviceFeePerHour?: string
+  }
+>
 
 export default function VehicleDetails({ data }: { data: Vehicle }) {
   const searchParams = useSearchParams()
@@ -48,8 +50,12 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
   const form = useForm<Partial<UpdateVehicleInput>>({
     defaultValues: {
       ...data,
-      lastMaintenance: data.lastMaintenance ? format(data.lastMaintenance, 'yyyy-MM-dd') : undefined,
-      purchaseDate: data.purchaseDate ? format(data.purchaseDate, 'yyyy-MM-dd') : undefined,
+      lastMaintenance: data.lastMaintenance
+        ? format(data.lastMaintenance, 'yyyy-MM-dd')
+        : undefined,
+      purchaseDate: data.purchaseDate
+        ? format(data.purchaseDate, 'yyyy-MM-dd')
+        : undefined,
       serviceFeePerHour: data.serviceFeePerHour?.toString(),
     },
     disabled: isSaving,
@@ -72,25 +78,23 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
         return
       }
       toast('Something went wrong.', {
-        action:
-        {
+        action: {
           label: 'Retry',
-          onClick: () => onSubmit(data)
-        }
+          onClick: () => onSubmit(data),
+        },
       })
     } catch (error) {
       console.error(error)
     } finally {
       setIsSaving(false)
     }
-
   }
 
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className='bg-neutral-50 dark:bg-neutral-900'>
-
+      className='bg-neutral-50 dark:bg-neutral-900'
+    >
       <header className='p-4 flex items-center gap-2 justify-between'>
         <div className='flex items-center gap-2'>
           <Button
@@ -105,10 +109,11 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
           <h3 className='capitalize'>Vehicle Details</h3>
         </div>
 
-        <div className={cn('flex items-center gap-3', { 'hidden': readOnly })}>
+        <div className={cn('flex items-center gap-3', { hidden: readOnly })}>
           <Button
             loading={isSaving}
-            disabled={form.formState.isDirty == false || isSaving}>
+            disabled={form.formState.isDirty == false || isSaving}
+          >
             Save
           </Button>
 
@@ -122,8 +127,14 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
           </Button>
         </div>
 
-        <Link href={`/dashboard/vehicles/${data.id}?action=edit`} className={cn({ hidden: !readOnly })}>
-          <Button type='button' disabled={isSaving}>
+        <Link
+          href={`/dashboard/vehicles/${data.id}?action=edit`}
+          className={cn({ hidden: !readOnly })}
+        >
+          <Button
+            type='button'
+            disabled={isSaving}
+          >
             Edit
           </Button>
         </Link>
@@ -177,20 +188,20 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
             </CardHeader>
             <CardContent className='grid grid-cols-2 place-items-start gap-4'>
               <div className='space-y-1'>
-                <Label htmlFor='lastMaintenance'>Last Maintenance</Label>
-                <Input
-                  type='date'
-                  placeholder='Last maintenance'
-                  {...form.register('lastMaintenance')}
-                  readOnly={readOnly}
-                />
-              </div>
-              <div className='space-y-1'>
                 <Label htmlFor='purchaseDate'>Purchased On</Label>
                 <Input
                   type='date'
                   id='purchaseDate'
                   {...form.register('purchaseDate')}
+                  readOnly={readOnly}
+                />
+              </div>
+              <div className='space-y-1'>
+                <Label htmlFor='lastMaintenance'>Last Maintenance</Label>
+                <Input
+                  type='date'
+                  placeholder='Last maintenance'
+                  {...form.register('lastMaintenance')}
                   readOnly={readOnly}
                 />
               </div>
@@ -204,10 +215,11 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               disabled={isSaving}
               hidden={readOnly}
               initialImageSrc={data.photoUrl}
-              onImageChange={function({ imageSrc }): void {
+              onImageChange={function ({ imageSrc }): void {
                 form.setValue('newPhotoUrl', imageSrc, { shouldDirty: true })
               }}
-              inputName={'photoUrl'} />
+              inputName={'photoUrl'}
+            />
           </div>
 
           <Card className='shadow-none p-5'>
@@ -216,7 +228,9 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
               <Select
                 defaultValue={data.status.toString()}
                 disabled={readOnly || isSaving}
-                onValueChange={(value) => form.setValue('status', +value, { shouldDirty: true })}
+                onValueChange={(value) =>
+                  form.setValue('status', +value, { shouldDirty: true })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder='Status' />
@@ -227,7 +241,10 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                       key={key}
                       value={key}
                     >
-                      <StatusWithDot label={value} color={VehicleStatusColor[+key as VehicleStatus]} />
+                      <StatusWithDot
+                        label={value}
+                        color={VehicleStatusColor[+key as VehicleStatus]}
+                      />
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -243,7 +260,8 @@ export default function VehicleDetails({ data }: { data: Vehicle }) {
                 <Input
                   type='number'
                   placeholder='Service Fee per hour'
-                  {...form.register('serviceFeePerHour')} />
+                  {...form.register('serviceFeePerHour')}
+                />
               </div>
             </div>
           </Card>

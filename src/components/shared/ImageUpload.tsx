@@ -40,7 +40,7 @@ export default function ImageUpload(props: {
         }}
       />
 
-      {props.initialImageSrc ? (
+      {imageSrc ? (
         <img
           src={props.hidden ? props.initialImageSrc : imageSrc}
           alt='Upload Image'
