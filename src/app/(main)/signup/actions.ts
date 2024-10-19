@@ -3,6 +3,8 @@
 import { prisma } from '@/common/configs/prisma'
 import { NewUser } from './new-user-schema'
 import { hashPassword } from '@/lib/server-only-utils'
+import { createTransport } from '@/common/services/email'
+import { randomIntSequenceString } from '@/lib/utils'
 
 export async function createUser(input: NewUser, username: string) {
   return await prisma.$transaction(async (tx) => {
@@ -14,6 +16,8 @@ export async function createUser(input: NewUser, username: string) {
 
     if (userExist) return { status: 409 }
 
+    const randomOTP = randomIntSequenceString(6)
+
     const newUserEntry = await tx.user.create({
       data: {
         email: input.email,
@@ -21,7 +25,27 @@ export async function createUser(input: NewUser, username: string) {
         lastName: input.lastName,
         username,
         password: hashPassword(input.password),
+        randomOTP: randomOTP,
       },
+    })
+
+    const emailRecipient = newUserEntry.email
+    const transporter = createTransport()
+
+    transporter.sendMail({
+      from: 'noreply@loretotrading',
+      sender: 'noreply@loretotrading',
+      cc: ['eechemane29@gmail.com'],
+      to: emailRecipient,
+      subject: `${randomOTP} is your verification code`,
+      html: `
+        <div style="margin: 2rem auto; max-width: 600px; padding: 1.5rem; font-family: sans-serif; border: 1px solid purple; border-radius: 2rem;">
+          <h1>Welcome, <span style="text-transform: capitalize">${newUserEntry.firstName} ${newUserEntry.lastName}</span> 🎉 </h1>
+          <p>Welcome to Loreto Trading. We are happy to have you here. To get started with your account, please verify your email. Your OTP is:</p>
+          <h2>${randomOTP}</h2>
+          <p>Thank you.</p>
+        </div>
+      `,
     })
 
     return { status: 201, id: newUserEntry.id }

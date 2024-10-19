@@ -18,6 +18,8 @@ export default function SignUpPage() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [isVerification, setIsVerification] = useState(false)
+
   const submit = async (data: NewUser) => {
     const username = `${data.firstName} ${data.lastName}`
     try {
@@ -28,12 +30,13 @@ export default function SignUpPage() {
           message: 'Email is unavailable. Please use a different one.',
         })
       } else if (res.status === 201) {
-        toast.success('Account created successfully. You may now login.', {
-          richColors: true,
-        })
-        form.reset()
-        alert('You will be redirected to the login page.')
-        router.push('/login')
+        setIsVerification(true)
+        // toast.success('Account created successfully. You may now login.', {
+        //   richColors: true,
+        // })
+        // form.reset()
+        // alert('You will be redirected to the login page.')
+        // router.push('/login')
       }
     } catch (error: any) {
       if (error?.code) {
