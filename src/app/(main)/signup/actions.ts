@@ -6,6 +6,34 @@ import { hashPassword } from '@/lib/server-only-utils'
 import { createTransport } from '@/common/services/email'
 import { randomIntSequenceString } from '@/lib/utils'
 
+export async function verifyOTPAction(otp: string, email: string) {
+  const user = await prisma.user.findFirst({
+    where: {
+      email,
+      randomOTP: otp,
+    },
+  })
+
+  if (!user) {
+    return { status: 400, ok: false }
+  }
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      randomOTP: null,
+      verified: true,
+    },
+  })
+
+  return {
+    ok: true,
+    status: 200,
+  }
+}
+
 export async function createUser(input: NewUser, username: string) {
   return await prisma.$transaction(async (tx) => {
     const userExist = await tx.user.findFirst({
