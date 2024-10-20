@@ -3,7 +3,7 @@
 import FormItem from '@/components/shared/forms/FormItem'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { FormEvent, useState } from 'react'
 import {
   createNewPasswordAction,
@@ -23,6 +23,8 @@ enum Step {
 
 export default function ForgotPasswordPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
+
   const uid = searchParams.get('uid')
   const [sendingEmail, setSendingEmail] = useState(false)
   const [currentStep, setCurrentStep] = useState<Step>(
@@ -69,6 +71,48 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className='border rounded-2xl shadow max-w-md mx-auto p-6 my-12'>
+      {currentStep === Step.EnterEmail && (
+        <>
+          <header className='mb-8'>
+            <div className='font-medium text-lg'>Forgot Password</div>
+            <p className='text-muted-foreground text-sm'>
+              {
+                "Enter the email address with your account and we'll send you a link to reset your password."
+              }
+            </p>
+          </header>
+          <form onSubmit={handleSubmit}>
+            <FormItem title='Account Email Address'>
+              <Input
+                required
+                type='email'
+                name='email'
+                placeholder='Ente your email'
+              />
+            </FormItem>
+            <div className='flex justify-end mt-4'>
+              <Button loading={sendingEmail}>Send Reset Link</Button>
+            </div>
+          </form>
+        </>
+      )}
+
+      {currentStep === Step.ResetLinkSent && (
+        <div>
+          <h3>Email Sent</h3>
+          <p className='text-muted-foreground text-sm mt-1'>
+            {
+              "We've sent you an email with a link to reset your password. Please check your email and follow the instructions."
+            }
+          </p>
+          <div className='flex justify-end mt-4'>
+            <Button onClick={() => setCurrentStep(Step.EnterEmail)}>
+              Back
+            </Button>
+          </div>
+        </div>
+      )}
+
       {currentStep === Step.CreateNewPassword && (
         <>
           <header className='mb-8'>
@@ -108,44 +152,20 @@ export default function ForgotPasswordPage() {
         </>
       )}
 
-      {currentStep === Step.EnterEmail && (
-        <>
-          <header className='mb-8'>
-            <div className='font-medium text-lg'>Forgot Password</div>
-            <p className='text-muted-foreground text-sm'>
-              {
-                "Enter the email address with your account and we'll send you a link to reset your password."
-              }
-            </p>
-          </header>
-          <form onSubmit={handleSubmit}>
-            <FormItem title='Account Email Address'>
-              <Input
-                required
-                type='email'
-                name='email'
-                placeholder='Ente your email'
-              />
-            </FormItem>
-            <div className='flex justify-end mt-4'>
-              <Button loading={sendingEmail}>Send Reset Link</Button>
-            </div>
-          </form>
-        </>
-      )}
-
-      {currentStep === Step.ResetLinkSent && (
+      {currentStep === Step.PasswordResetSuccessfully && (
         <div>
-          <h3>Email Sent</h3>
+          <h3>{'Your password has been reset 🎉'}</h3>
           <p className='text-muted-foreground text-sm mt-1'>
-            {
-              "We've sent you an email with a link to reset your password. Please check your email and follow the instructions."
-            }
+            You can now login with your new password.
           </p>
-          <div className='flex justify-end mt-4'>
-            <Button onClick={() => setCurrentStep(Step.EnterEmail)}>
-              Back
+          <div className='flex justify-end mt-4 gap-4'>
+            <Button
+              onClick={() => router.push('/')}
+              variant={'secondary'}
+            >
+              Back to home
             </Button>
+            <Button onClick={() => router.push('/?open=1')}>Log in</Button>
           </div>
         </div>
       )}
