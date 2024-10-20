@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { NewPassword, NewPasswordSchema } from './new-password-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { motion } from 'framer-motion'
 
 enum Step {
   EnterEmail,
@@ -71,8 +72,13 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className='border rounded-2xl shadow max-w-md mx-auto p-6 my-12'>
+      <div className='font-bold text-purple-600 mb-8'>Loreto Trading</div>
+
       {currentStep === Step.EnterEmail && (
-        <>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: -100 }}
+        >
           <header className='mb-8'>
             <div className='font-medium text-lg'>Forgot Password</div>
             <p className='text-muted-foreground text-sm'>
@@ -94,11 +100,14 @@ export default function ForgotPasswordPage() {
               <Button loading={sendingEmail}>Send Reset Link</Button>
             </div>
           </form>
-        </>
+        </motion.div>
       )}
 
       {currentStep === Step.ResetLinkSent && (
-        <div>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: 100 }}
+        >
           <h3>Email Sent</h3>
           <p className='text-muted-foreground text-sm mt-1'>
             {
@@ -110,11 +119,14 @@ export default function ForgotPasswordPage() {
               Back
             </Button>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {currentStep === Step.CreateNewPassword && (
-        <>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: 100 }}
+        >
           <header className='mb-8'>
             <div className='font-medium text-lg'>Create New Password</div>
             <p className='text-muted-foreground text-sm'>
@@ -149,25 +161,28 @@ export default function ForgotPasswordPage() {
               <Button loading={creatingNewPassword}>Reset Password</Button>
             </div>
           </form>
-        </>
+        </motion.div>
       )}
 
       {currentStep === Step.PasswordResetSuccessfully && (
-        <div>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: 100 }}
+        >
           <h3>{'Your password has been reset 🎉'}</h3>
           <p className='text-muted-foreground text-sm mt-1'>
             You can now login with your new password.
           </p>
-          <div className='flex justify-end mt-4 gap-4'>
+          <div className='flex justify-end mt-6 gap-4'>
+            <Button onClick={() => router.push('/?open=1')}>Log in</Button>
             <Button
               onClick={() => router.push('/')}
-              variant={'secondary'}
+              variant={'outline'}
             >
               Back to home
             </Button>
-            <Button onClick={() => router.push('/?open=1')}>Log in</Button>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   )

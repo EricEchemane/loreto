@@ -6,6 +6,7 @@ const createTransport = () => {
     service: 'gmail',
     auth: {
       user: 'eechemane29@gmail.com',
+      // user: 'loretotrd@gmail.com', TOBE
       pass: GOOGLE_PASSWORD,
     },
   })
