@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import { GOOGLE_PASSWORD } from '../constants/server-only-constants'
 
-export const createTransport = () => {
+const createTransport = () => {
   return nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -10,3 +10,5 @@ export const createTransport = () => {
     },
   })
 }
+
+export const emailTransporter = createTransport()
