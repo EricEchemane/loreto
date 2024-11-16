@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Session } from 'next-auth'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { pesos } from '@/lib/utils'
@@ -69,6 +68,7 @@ export default function BookingForm({
     },
   })
   const errors = form.formState.errors
+  console.log(form.watch().travelType)
 
   if (!v) {
     return (
@@ -85,11 +85,18 @@ export default function BookingForm({
 
   const onSubmit = async (data: VehicleBookingInput) => {
     try {
+      if (!['1', '2', '3'].includes(form.getValues().travelType)) {
+        form.setError('travelType', {
+          message: 'Please select a valid travel type',
+        })
+        return
+      }
       setIsLoading(true)
       const res = await createBooking(data)
       if (res.status === 201) {
         toast('Booking successful', {
           description: 'We will contact you shortly to confirm your booking',
+          richColors: true,
         })
         form.reset()
         router.back()
@@ -196,14 +203,14 @@ export default function BookingForm({
             </div>
             <div className='space-y-2'>
               <Label>Travel type</Label>
-              <RadioGroup
-                className='flex justify-between'
-                {...form.register('travelType')}
-              >
+              <RadioGroup className='flex justify-between'>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
                     value='1'
                     id='r1'
+                    onClick={() => {
+                      form.setValue('travelType', '1')
+                    }}
                   />
                   <Label htmlFor='r1'>One way</Label>
                 </div>
@@ -211,6 +218,9 @@ export default function BookingForm({
                   <RadioGroupItem
                     value='2'
                     id='r2'
+                    onClick={() => {
+                      form.setValue('travelType', '2')
+                    }}
                   />
                   <Label htmlFor='r2'>Round trip</Label>
                 </div>
@@ -218,6 +228,9 @@ export default function BookingForm({
                   <RadioGroupItem
                     value='3'
                     id='r3'
+                    onClick={() => {
+                      form.setValue('travelType', '3')
+                    }}
                   />
                   <Label htmlFor='r3'>Hourly</Label>
                 </div>
