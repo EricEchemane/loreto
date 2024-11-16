@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { User } from '@prisma/client'
 
 const BookInputSchema = z.object({
   firstName: z
@@ -51,7 +52,7 @@ export default function BookingForm({
   vehicleId,
 }: {
   v: Awaited<ReturnType<typeof getVehicleById>>
-  user: Session['user']
+  user: User
   vehicleId: string
 }) {
   const router = useRouter()
@@ -61,6 +62,9 @@ export default function BookingForm({
     resolver: zodResolver(BookInputSchema),
     defaultValues: {
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      contactNumber: user.contactNumber ?? undefined,
       vehicleId,
     },
   })
