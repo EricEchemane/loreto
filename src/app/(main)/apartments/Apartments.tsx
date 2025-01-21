@@ -19,7 +19,7 @@ import ApartmentStatusLabel from '@/components/shared/ApartmentStatusLabel'
 
 export default function Apartments(props: { apartments: Apartment[] }) {
   return (
-    <div className='gap-8 grid-cols-2 grid'>
+    <div className='gap-8 grid-cols-3 grid'>
       {props.apartments.map((a) => {
         return (
           <Card
