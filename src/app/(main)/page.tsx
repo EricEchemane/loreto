@@ -9,7 +9,7 @@ export default function Home() {
     <div>
       <Navbar />
 
-      <main className='max-w-5xl m-auto p-3 mt-4'>
+      <main className='max-w-6xl m-auto p-3 mt-4'>
         <div className='grid grid-cols-2'>
           <div className='mt-16'>
             <LoretoTradingH1 />
