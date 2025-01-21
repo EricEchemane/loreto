@@ -57,6 +57,7 @@ export default async function Navbar() {
     <nav className='flex gap-4 items-center max-w-6xl m-auto p-3'>
       {HomeLinkTitle}
       <div className='gap-8 ml-auto flex items-center'>
+        <Link href={'/'}>Home</Link>
         <Link href={'/apartments'}>Apartments</Link>
         <Link href={'/vehicles/'}>Book a Vehicle</Link>
         <Link href={'/box'}>Custom Box</Link>
