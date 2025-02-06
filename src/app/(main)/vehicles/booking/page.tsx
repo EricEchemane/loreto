@@ -35,11 +35,18 @@ export default async function Page(props: {
     },
   })
 
+  const bookings = await prisma.booking.findMany({
+    orderBy: {
+      pickupDate: 'desc',
+    },
+  })
+
   return (
     <BookingForm
       v={v}
       user={user!}
       vehicleId={props.searchParams.vehicleId}
+      bookings={bookings}
     />
   )
 }
