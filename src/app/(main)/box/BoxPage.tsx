@@ -45,7 +45,7 @@ export default function BoxPage() {
         >
           <AccordionItem value='dimensions'>
             <AccordionTrigger className='p-4 small text-muted-foreground'>
-              Dimensions
+              Dimensions (inch)
             </AccordionTrigger>
             <AccordionContent>
               <DimensionControls controls={controls} />

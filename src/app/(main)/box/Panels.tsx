@@ -87,11 +87,20 @@ export default function Panels(props: {
               gridTemplateColumns: `${props.controls.leftPanelSize}% ${props.controls.rightPanelSize}%`,
             }}
           >
-            <div className='text-center'>W - {props.controls.pixelWidth}</div>
-            <div className='text-center'>L - {props.controls.pixelLength}</div>
+            <div className='text-center'>
+              W - {props.controls.pixelWidth}
+              <code>in</code>
+            </div>
+            <div className='text-center'>
+              L - {props.controls.pixelLength}
+              <code>in</code>
+            </div>
           </div>
-          <div className='left-[-5rem] absolute top-0 bottom-0 grid place-items-center'>
-            H - {props.controls.height}
+          <div className='left-[-7rem] absolute top-0 bottom-0 grid place-items-center'>
+            <span>
+              H - {props.controls.height}
+              <code>in</code>
+            </span>
           </div>
 
           <ResizablePanel
@@ -140,13 +149,15 @@ export default function Panels(props: {
           e.target.style.width = `${e.width}px`
           e.target.style.height = `${e.height}px`
           e.target.style.transform = e.drag.transform
-          props.controls.setHeight(e.height / props.controls.SCALE_FACTOR)
-          props.controls.setContainerWidth(
-            e.width / props.controls.SCALE_FACTOR
-          )
+
+          const downScaledHeight = e.height / props.controls.SCALE_FACTOR
+          const downScaledWidth = e.width / props.controls.SCALE_FACTOR
+
+          props.controls.setHeight(Math.round(downScaledHeight))
+          props.controls.setContainerWidth(Math.round(downScaledWidth))
           localStorage.setItem(
             LSKeys.CONTAINER_WIDTH,
-            (e.width / props.controls.SCALE_FACTOR).toString()
+            Math.round(downScaledWidth).toString()
           )
         }}
         onDrag={(e) => {
