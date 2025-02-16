@@ -75,7 +75,7 @@ export default function FloatingToolbar(props: Props) {
     if (!props.controls.boxNameRef.current?.value.trim()) {
       props.controls.boxNameRef.current?.focus()
       toast('Please give your box a name.', {
-        position: 'top-right',
+        position: 'top-center',
         duration: 1200,
       })
       return
