@@ -5,8 +5,9 @@ import useBoxControls from './useBoxControls'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
-import { computePrice, getPricePerInch, pesos } from '@/lib/utils'
+import { computePrice, getPricePerInch } from '@/lib/utils'
 import { SlidingNumber } from '@/components/ui/sliding-number'
+import { useState } from 'react'
 
 type Props = {
   controls: ReturnType<typeof useBoxControls>
@@ -23,6 +24,20 @@ export default function BoxQuotation(props: Props) {
     width: props.controls.pixelWidth,
     thickness: props.controls.boxThickness === 1 ? 'single' : 'double',
   })
+
+  const [scaleFactor, setScaleFactor] = useState(8)
+  const color = '#af8e76'
+  const createBox = (w: number) => {
+    return (
+      <div
+        className='border h-full'
+        style={{
+          width: `${w * scaleFactor}px`,
+          backgroundColor: color,
+        }}
+      />
+    )
+  }
 
   return (
     <>
@@ -49,10 +64,10 @@ export default function BoxQuotation(props: Props) {
             </Button>
 
             <div className='w-full h-full grid place-items-center'>
-              <div className=' w-[50%] bg-white shadow rounded p-8'>
+              <div className='bg-white shadow rounded p-8'>
                 <div className='font-bold'>Your Box Quotation</div>
 
-                <div className='grid grid-cols-2 gap-4 w-1/2 mt-8 items-center'>
+                <section className='grid grid-cols-2 gap-4 w-1/2 mt-8 items-center'>
                   <div>Thickness:</div>
                   <div className='flex items-center gap-1'>
                     <Button
@@ -108,12 +123,73 @@ export default function BoxQuotation(props: Props) {
                     <code>in</code>{' '}
                   </div>
 
+                  <div>Total Area:</div>
+                  <div>
+                    {computation.totalArea}
+                    <code>
+                      <sup>2</sup>inch
+                    </code>
+                  </div>
+
                   <div className='font-bold'>Total Cost:</div>
                   <div className='font-bold inline-flex'>
                     ₱
                     <SlidingNumber value={+computation.totalPrice.toFixed(2)} />
                   </div>
-                </div>
+                </section>
+
+                <section
+                  className='mt-8 h-auto'
+                  style={{
+                    width: `${
+                      (props.controls.pixelWidth + props.controls.pixelLength) *
+                        2 *
+                        scaleFactor +
+                      (props.controls.pixelWidth / 2) * scaleFactor
+                    }px`,
+                  }}
+                >
+                  <div
+                    className='flex'
+                    style={{
+                      height: `${
+                        (props.controls.pixelWidth * scaleFactor) / 2
+                      }px`,
+                    }}
+                  >
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                  </div>
+
+                  <div
+                    className='flex items-center'
+                    style={{
+                      height: `${props.controls.height * scaleFactor}px`,
+                    }}
+                  >
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth / 2)}
+                  </div>
+
+                  <div
+                    className='flex items-center'
+                    style={{
+                      height: `${
+                        (props.controls.pixelWidth * scaleFactor) / 2
+                      }px`,
+                    }}
+                  >
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth)}
+                    {createBox(props.controls.pixelLength)}
+                  </div>
+                </section>
               </div>
             </div>
           </motion.div>,

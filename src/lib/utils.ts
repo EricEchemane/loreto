@@ -49,6 +49,7 @@ type ComputePriceReturn = {
   rightSideArea: number
   topArea: number
   bottomArea: number
+  totalArea: number
   totalPrice: number
 }
 export function computePrice({
@@ -91,6 +92,7 @@ export function computePrice({
     frontArea,
     backArea,
     totalPrice: top + bottom + leftSide + rightSide + front + back,
+    totalArea: (topArea + leftSideArea + frontArea) * 2,
   }
 }
 
