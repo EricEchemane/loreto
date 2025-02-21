@@ -66,6 +66,8 @@ export default function useBoxControls() {
   const [markings, setMarkings] = useState<LocalMarking[]>([])
   const [imageMarkings, setImageMarkings] = useState<LocalImageMarking[]>([])
 
+  const [quotationOpen, setQuotationOpen] = useState(false)
+
   useEffect(() => {
     if (height !== 0) localStorage.setItem(LSKeys.BOX_HEIGHT, height.toString())
   }, [height])
@@ -285,5 +287,8 @@ export default function useBoxControls() {
     setQuality,
     // converts inch unit to fit the screen
     SCALE_FACTOR,
+    //
+    quotationOpen,
+    setQuotationOpen,
   }
 }
