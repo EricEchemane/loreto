@@ -68,7 +68,12 @@ export default function BoxQuotation(props: Props) {
 
             <div className='w-full h-full grid place-items-center'>
               <div className='bg-white shadow rounded p-8'>
-                <div className='font-bold'>Your Box Quotation</div>
+                <div className='flex items-start justify-between'>
+                  <div className='font-bold'>Your Box Quotation</div>
+                  <div className='font-medium text-primary text-sm'>
+                    @LoretoTrading
+                  </div>
+                </div>
 
                 <section className='grid grid-cols-2 gap-4 w-1/2 mt-8 items-center'>
                   <div>Thickness:</div>
@@ -126,7 +131,7 @@ export default function BoxQuotation(props: Props) {
                     <code>in</code>{' '}
                   </div>
 
-                  <div>Total Area:</div>
+                  <div>Total Box Area:</div>
                   <div>
                     {computation.totalArea}
                     <code>
@@ -135,7 +140,7 @@ export default function BoxQuotation(props: Props) {
                   </div>
 
                   <div className='font-bold'>Total Cost:</div>
-                  <div className='font-bold inline-flex'>
+                  <div className='font-bold inline-flex border-b-4'>
                     ₱
                     <SlidingNumber value={+computation.totalPrice.toFixed(2)} />
                   </div>
