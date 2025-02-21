@@ -27,15 +27,18 @@ export default function BoxQuotation(props: Props) {
 
   const [scaleFactor, setScaleFactor] = useState(8)
   const color = '#af8e76'
-  const createBox = (w: number) => {
+  const createBox = (w: number, label = '') => {
     return (
       <div
-        className='border h-full'
+        className='border h-full text-xs grid place-items-center text-white'
         style={{
           width: `${w * scaleFactor}px`,
           backgroundColor: color,
+          backgroundImage: 'url(/karton.avif)',
         }}
-      />
+      >
+        {label}
+      </div>
     )
   }
 
@@ -157,10 +160,10 @@ export default function BoxQuotation(props: Props) {
                       }px`,
                     }}
                   >
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth, 'Top side cover')}
+                    {createBox(props.controls.pixelLength, 'Top long cover')}
+                    {createBox(props.controls.pixelWidth, 'Top side cover')}
+                    {createBox(props.controls.pixelLength, 'Top long cover')}
                   </div>
 
                   <div
@@ -169,10 +172,10 @@ export default function BoxQuotation(props: Props) {
                       height: `${props.controls.height * scaleFactor}px`,
                     }}
                   >
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth, 'Left side')}
+                    {createBox(props.controls.pixelLength, 'Front')}
+                    {createBox(props.controls.pixelWidth, 'Right side')}
+                    {createBox(props.controls.pixelLength, 'Back')}
                     {createBox(props.controls.pixelWidth / 2)}
                   </div>
 
@@ -184,10 +187,10 @@ export default function BoxQuotation(props: Props) {
                       }px`,
                     }}
                   >
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
-                    {createBox(props.controls.pixelWidth)}
-                    {createBox(props.controls.pixelLength)}
+                    {createBox(props.controls.pixelWidth, 'Bottom cover')}
+                    {createBox(props.controls.pixelLength, 'Bottom cover')}
+                    {createBox(props.controls.pixelWidth, 'Bottom cover')}
+                    {createBox(props.controls.pixelLength, 'Bottom cover')}
                   </div>
                 </section>
               </div>
