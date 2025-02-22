@@ -5,7 +5,7 @@ import useBoxControls from './useBoxControls'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
-import { computePrice, getPricePerInch } from '@/lib/utils'
+import { cn, computePrice, getPricePerInch } from '@/lib/utils'
 import { SlidingNumber } from '@/components/ui/sliding-number'
 import { ReactNode, useState } from 'react'
 
@@ -25,22 +25,7 @@ export default function BoxQuotation(props: Props) {
     thickness: props.controls.boxThickness === 1 ? 'single' : 'double',
   })
 
-  const [scaleFactor, setScaleFactor] = useState(8)
-  const color = '#af8e76'
-  const createBox = (w: number, label: ReactNode = null) => {
-    return (
-      <div
-        className='border h-full text-xs grid place-items-center text-white'
-        style={{
-          width: `${w * scaleFactor}px`,
-          backgroundColor: color,
-          backgroundImage: 'url(/karton.avif)',
-        }}
-      >
-        {label}
-      </div>
-    )
-  }
+  const [scaleFactor] = useState(8)
 
   return (
     <>
@@ -146,6 +131,9 @@ export default function BoxQuotation(props: Props) {
                   </div>
                 </section>
 
+                <div className='mb-3 mt-8 ml-5 text-sm'>
+                  Unit of Measurement: <code>inch</code>{' '}
+                </div>
                 <Render2DBox
                   controls={props.controls}
                   scaleFactor={scaleFactor}
@@ -163,119 +151,196 @@ export function Render2DBox(props: {
   controls: ReturnType<typeof useBoxControls>
   scaleFactor: number
 }) {
+  const coverHeight = props.controls.pixelWidth / 2
+  const bodyHeight = props.controls.height
+  const total2DHeight = coverHeight * 2 + bodyHeight
+
+  const total2DLength =
+    (props.controls.pixelWidth + props.controls.pixelLength) * 2 +
+    props.controls.pixelWidth
+
   return (
-    <section
-      className='mt-8 h-auto relative'
-      style={{
-        width: `${
-          (props.controls.pixelWidth + props.controls.pixelLength) *
-            2 *
-            props.scaleFactor +
-          (props.controls.pixelWidth / 2) * props.scaleFactor
-        }px`,
-      }}
-    >
-      <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
-        <BoxPortion
-          isCover='top'
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          Top side cover
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          Top long cover
-        </BoxPortion>
-        <BoxPortion
-          isCover='top'
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          Top side cover
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          Top long cover
-        </BoxPortion>
-      </BoxRow2D>
+    <div className='relative h-auto pl-5 pb-5'>
+      <div
+        aria-label={'Ruler-y'}
+        className='absolute left-5 top-0 bottom-5 w-0.5 bg-neutral-400'
+        style={{
+          height: `${total2DHeight * props.scaleFactor}px`,
+        }}
+      >
+        {Array.from({ length: total2DHeight + 5 })
+          .map((_, i) => i)
+          .reverse()
+          .map((n) => {
+            if (n % 5 !== 0) return null
+            return (
+              <div
+                key={n}
+                className='text-xs h-0.5 w-3 bg-neutral-400 absolute bottom-0 -left-3'
+                style={{
+                  transform: `translateY(-${n * props.scaleFactor}px)`,
+                }}
+              >
+                <span className='absolute -left-4 top-1/2 -translate-y-1/2 text-xs text-muted-foreground'>
+                  {n}
+                </span>
+              </div>
+            )
+          })}
+      </div>
+      <div
+        aria-label={'Ruler-x'}
+        className='absolute left-5 bottom-5 h-0.5 bg-neutral-400 flex justify-between'
+        style={{
+          width: `${
+            ((props.controls.pixelWidth + props.controls.pixelLength) * 2 +
+              props.controls.pixelWidth) *
+            props.scaleFactor
+          }px`,
+        }}
+      >
+        {Array.from({ length: total2DLength + 5 }).map((_, n) => {
+          if (n % 5 !== 0) return null
+          return (
+            <div
+              key={n}
+              className='text-xs w-0.5 bg-neutral-400 h-3 absolute'
+              style={{
+                transform: `translateX(${n * props.scaleFactor}px)`,
+              }}
+            >
+              <span className='absolute -bottom-4 left-1/2 -translate-x-1/2 text-xs text-muted-foreground'>
+                {n}
+              </span>
+            </div>
+          )
+        })}
+      </div>
 
-      <BoxRow2D height={props.controls.height * props.scaleFactor}>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          <span>Left side</span>
-          <pre>
-            {props.controls.pixelWidth}x{props.controls.height}
-          </pre>
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          <span>Front</span>
-          <pre>
-            {props.controls.pixelLength}x{props.controls.height}
-          </pre>
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          <span>Right side</span>
-          <pre>
-            {props.controls.pixelWidth}x{props.controls.height}
-          </pre>
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          <span>Back</span>
-          <pre>
-            {props.controls.pixelLength}x{props.controls.height}
-          </pre>
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth / 2}
-        />
-      </BoxRow2D>
+      <section
+        style={{
+          width: `${
+            ((props.controls.pixelWidth + props.controls.pixelLength) * 2 +
+              props.controls.pixelWidth) *
+            props.scaleFactor
+          }px`,
+        }}
+      >
+        <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
+          <BoxPortion
+            controls={props.controls}
+            isCover='top'
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            Top side cover
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            Top long cover
+          </BoxPortion>
+          <BoxPortion
+            isCover='top'
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            Top side cover
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            Top long cover
+          </BoxPortion>
+        </BoxRow2D>
 
-      <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
-        <BoxPortion
-          isCover='bottom'
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          Bottom cover
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          Bottom cover
-        </BoxPortion>
-        <BoxPortion
-          isCover='bottom'
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelWidth}
-        >
-          Bottom cover
-        </BoxPortion>
-        <BoxPortion
-          scaleFactor={props.scaleFactor}
-          width={props.controls.pixelLength}
-        >
-          Bottom cover
-        </BoxPortion>
-      </BoxRow2D>
-    </section>
+        <BoxRow2D height={props.controls.height * props.scaleFactor}>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            <span>Left side</span>
+            <pre>
+              {props.controls.pixelWidth}x{props.controls.height}
+            </pre>
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            <span>Front</span>
+            <pre>
+              {props.controls.pixelLength}x{props.controls.height}
+            </pre>
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            <span>Right side</span>
+            <pre>
+              {props.controls.pixelWidth}x{props.controls.height}
+            </pre>
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            <span>Back</span>
+            <pre>
+              {props.controls.pixelLength}x{props.controls.height}
+            </pre>
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          />
+        </BoxRow2D>
+
+        <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
+          <BoxPortion
+            controls={props.controls}
+            isCover='bottom'
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            Bottom cover
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            Bottom cover
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            isCover='bottom'
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelWidth}
+          >
+            Bottom cover
+          </BoxPortion>
+          <BoxPortion
+            controls={props.controls}
+            scaleFactor={props.scaleFactor}
+            width={props.controls.pixelLength}
+          >
+            Bottom cover
+          </BoxPortion>
+        </BoxRow2D>
+      </section>
+    </div>
   )
 }
 
@@ -284,11 +349,13 @@ function BoxPortion({
   width,
   scaleFactor,
   isCover,
+  controls,
 }: {
   width: number
   children?: ReactNode
   scaleFactor: number
   isCover?: 'top' | 'bottom'
+  controls: ReturnType<typeof useBoxControls>
 }) {
   const getClipPath = () => {
     if (isCover === 'top') return 'polygon(3% 0, 97% 0%, 100% 100%, 0% 100%)'
@@ -298,7 +365,12 @@ function BoxPortion({
 
   return (
     <div
-      className='border h-full text-sm flex flex-col items-center justify-center text-white'
+      className={cn(
+        'border h-full text-xs text-center flex flex-col items-center justify-center text-white',
+        {
+          'drop-shadow-md': controls?.boxThickness === 2,
+        }
+      )}
       style={{
         width: `${width * scaleFactor}px`,
         backgroundImage: 'url(/karton.avif)',
