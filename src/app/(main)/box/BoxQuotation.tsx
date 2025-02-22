@@ -8,6 +8,7 @@ import { XIcon } from 'lucide-react'
 import { cn, computePrice, getPricePerInch } from '@/lib/utils'
 import { SlidingNumber } from '@/components/ui/sliding-number'
 import { ReactNode, useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 type Props = {
   controls: ReturnType<typeof useBoxControls>
@@ -26,6 +27,8 @@ export default function BoxQuotation(props: Props) {
   })
 
   const [scaleFactor] = useState(8)
+
+  const session = useSession()
 
   return (
     <>
@@ -52,7 +55,7 @@ export default function BoxQuotation(props: Props) {
             </Button>
 
             <div className='w-full h-full grid place-items-center'>
-              <div className='bg-white shadow rounded p-8'>
+              <div className='bg-white shadow rounded p-8 text-black [&_code]:dark:text-white'>
                 <div className='flex items-start justify-between'>
                   <div className='font-bold'>Your Box Quotation</div>
                   <div className='font-medium text-primary text-sm'>
@@ -69,6 +72,7 @@ export default function BoxQuotation(props: Props) {
                         props.controls.boxThickness == 1 ? 'outline' : 'ghost'
                       }
                       onClick={() => props.controls.setBoxThickness(1)}
+                      className='dark:text-white'
                     >
                       Single
                     </Button>
@@ -78,6 +82,7 @@ export default function BoxQuotation(props: Props) {
                         props.controls.boxThickness == 2 ? 'outline' : 'ghost'
                       }
                       onClick={() => props.controls.setBoxThickness(2)}
+                      className='dark:text-white'
                     >
                       Double
                     </Button>
@@ -131,13 +136,23 @@ export default function BoxQuotation(props: Props) {
                   </div>
                 </section>
 
-                <div className='mb-3 mt-8 ml-5 text-sm'>
+                <div className='mb-3 mt-8 ml-8 text-sm'>
                   Unit of Measurement: <code>inch</code>{' '}
                 </div>
                 <Render2DBox
                   controls={props.controls}
                   scaleFactor={scaleFactor}
                 />
+
+                <div className='mt-4'>
+                  <div>
+                    For:{' '}
+                    <span className='inline-block underline capitalize'>
+                      {session.data?.user.name}
+                    </span>
+                  </div>
+                  <div className='text-xs'>{session.data?.user.email}</div>
+                </div>
               </div>
             </div>
           </motion.div>,
@@ -160,10 +175,10 @@ export function Render2DBox(props: {
     props.controls.pixelWidth
 
   return (
-    <div className='relative h-auto pl-5 pb-5'>
+    <div className='relative h-auto pl-8 pb-8'>
       <div
         aria-label={'Ruler-y'}
-        className='absolute left-5 top-0 bottom-5 w-0.5 bg-neutral-400'
+        className='absolute left-8 top-0 bottom-8 w-0.5 bg-neutral-400'
         style={{
           height: `${total2DHeight * props.scaleFactor}px`,
         }}
@@ -190,7 +205,7 @@ export function Render2DBox(props: {
       </div>
       <div
         aria-label={'Ruler-x'}
-        className='absolute left-5 bottom-5 h-0.5 bg-neutral-400 flex justify-between'
+        className='absolute left-8 bottom-8 h-0.5 bg-neutral-400 flex justify-between'
         style={{
           width: `${
             ((props.controls.pixelWidth + props.controls.pixelLength) * 2 +
