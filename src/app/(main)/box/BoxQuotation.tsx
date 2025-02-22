@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
 import { computePrice, getPricePerInch } from '@/lib/utils'
 import { SlidingNumber } from '@/components/ui/sliding-number'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 type Props = {
   controls: ReturnType<typeof useBoxControls>
@@ -27,7 +27,7 @@ export default function BoxQuotation(props: Props) {
 
   const [scaleFactor, setScaleFactor] = useState(8)
   const color = '#af8e76'
-  const createBox = (w: number, label = '') => {
+  const createBox = (w: number, label: ReactNode = null) => {
     return (
       <div
         className='border h-full text-xs grid place-items-center text-white'
@@ -146,63 +146,185 @@ export default function BoxQuotation(props: Props) {
                   </div>
                 </section>
 
-                <section
-                  className='mt-8 h-auto'
-                  style={{
-                    width: `${
-                      (props.controls.pixelWidth + props.controls.pixelLength) *
-                        2 *
-                        scaleFactor +
-                      (props.controls.pixelWidth / 2) * scaleFactor
-                    }px`,
-                  }}
-                >
-                  <div
-                    className='flex'
-                    style={{
-                      height: `${
-                        (props.controls.pixelWidth * scaleFactor) / 2
-                      }px`,
-                    }}
-                  >
-                    {createBox(props.controls.pixelWidth, 'Top side cover')}
-                    {createBox(props.controls.pixelLength, 'Top long cover')}
-                    {createBox(props.controls.pixelWidth, 'Top side cover')}
-                    {createBox(props.controls.pixelLength, 'Top long cover')}
-                  </div>
-
-                  <div
-                    className='flex items-center'
-                    style={{
-                      height: `${props.controls.height * scaleFactor}px`,
-                    }}
-                  >
-                    {createBox(props.controls.pixelWidth, 'Left side')}
-                    {createBox(props.controls.pixelLength, 'Front')}
-                    {createBox(props.controls.pixelWidth, 'Right side')}
-                    {createBox(props.controls.pixelLength, 'Back')}
-                    {createBox(props.controls.pixelWidth / 2)}
-                  </div>
-
-                  <div
-                    className='flex items-center'
-                    style={{
-                      height: `${
-                        (props.controls.pixelWidth * scaleFactor) / 2
-                      }px`,
-                    }}
-                  >
-                    {createBox(props.controls.pixelWidth, 'Bottom cover')}
-                    {createBox(props.controls.pixelLength, 'Bottom cover')}
-                    {createBox(props.controls.pixelWidth, 'Bottom cover')}
-                    {createBox(props.controls.pixelLength, 'Bottom cover')}
-                  </div>
-                </section>
+                <Render2DBox
+                  controls={props.controls}
+                  scaleFactor={scaleFactor}
+                />
               </div>
             </div>
           </motion.div>,
           document.body
         )}
     </>
+  )
+}
+
+export function Render2DBox(props: {
+  controls: ReturnType<typeof useBoxControls>
+  scaleFactor: number
+}) {
+  return (
+    <section
+      className='mt-8 h-auto relative'
+      style={{
+        width: `${
+          (props.controls.pixelWidth + props.controls.pixelLength) *
+            2 *
+            props.scaleFactor +
+          (props.controls.pixelWidth / 2) * props.scaleFactor
+        }px`,
+      }}
+    >
+      <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
+        <BoxPortion
+          isCover='top'
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          Top side cover
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          Top long cover
+        </BoxPortion>
+        <BoxPortion
+          isCover='top'
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          Top side cover
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          Top long cover
+        </BoxPortion>
+      </BoxRow2D>
+
+      <BoxRow2D height={props.controls.height * props.scaleFactor}>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          <span>Left side</span>
+          <pre>
+            {props.controls.pixelWidth}x{props.controls.height}
+          </pre>
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          <span>Front</span>
+          <pre>
+            {props.controls.pixelLength}x{props.controls.height}
+          </pre>
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          <span>Right side</span>
+          <pre>
+            {props.controls.pixelWidth}x{props.controls.height}
+          </pre>
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          <span>Back</span>
+          <pre>
+            {props.controls.pixelLength}x{props.controls.height}
+          </pre>
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth / 2}
+        />
+      </BoxRow2D>
+
+      <BoxRow2D height={(props.controls.pixelWidth * props.scaleFactor) / 2}>
+        <BoxPortion
+          isCover='bottom'
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          Bottom cover
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          Bottom cover
+        </BoxPortion>
+        <BoxPortion
+          isCover='bottom'
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelWidth}
+        >
+          Bottom cover
+        </BoxPortion>
+        <BoxPortion
+          scaleFactor={props.scaleFactor}
+          width={props.controls.pixelLength}
+        >
+          Bottom cover
+        </BoxPortion>
+      </BoxRow2D>
+    </section>
+  )
+}
+
+function BoxPortion({
+  children,
+  width,
+  scaleFactor,
+  isCover,
+}: {
+  width: number
+  children?: ReactNode
+  scaleFactor: number
+  isCover?: 'top' | 'bottom'
+}) {
+  const getClipPath = () => {
+    if (isCover === 'top') return 'polygon(3% 0, 97% 0%, 100% 100%, 0% 100%)'
+    if (isCover === 'bottom') return 'polygon(0 0, 100% 0%, 97% 100%, 3% 100%)'
+    return undefined
+  }
+
+  return (
+    <div
+      className='border h-full text-sm flex flex-col items-center justify-center text-white'
+      style={{
+        width: `${width * scaleFactor}px`,
+        backgroundImage: 'url(/karton.avif)',
+        clipPath: getClipPath(),
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function BoxRow2D({
+  children,
+  height,
+}: {
+  children: ReactNode
+  height: number
+}) {
+  return (
+    <div
+      className='flex'
+      style={{
+        height: `${height}px`,
+      }}
+    >
+      {children}
+    </div>
   )
 }
