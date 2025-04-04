@@ -60,7 +60,7 @@ export default function BoxPage() {
           </AccordionItem>
           <AccordionItem value='phase-1'>
             <AccordionTrigger className='p-4 small text-muted-foreground'>
-              Markings
+              Remarks
             </AccordionTrigger>
             <AccordionContent>
               <MarkingsSidebar controls={controls} />
