@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 
 import HomeBoxesCarousel from './home-boxes-carousel'
 import ServicesCarousel from './services-carousel'
+import { contact, email } from '@/lib/constants'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
@@ -37,7 +38,7 @@ export default async function Home() {
         <HomeBoxesCarousel />
 
         <footer className='flex items-center justify-center gap-4 mt-24 mb-8'>
-          <div>loretotrdng@gmail.com</div>|<div>0932-323-1343</div>
+          <div>{email}</div>|<div>{contact}</div>
         </footer>
       </main>
     </div>
