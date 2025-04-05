@@ -113,7 +113,8 @@ export default function usePhAddressQuery(options: Options = {}) {
     if (options.onFullAddressChange) {
       options.onFullAddressChange(fullAddress)
     }
-  }, [fullAddress, options])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fullAddress])
 
   return {
     regionsQuery,
