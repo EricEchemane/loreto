@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface Region {
   code: string
@@ -36,7 +36,11 @@ export interface Barangay {
   psgc10DigitCode: string
 }
 
-export default function usePhAddressQuery() {
+interface Options {
+  onFullAddressChange?: (fullAddress: string) => void
+}
+
+export default function usePhAddressQuery(options: Options = {}) {
   const [selectedRegion, setSelectedRegion] = useState<Region | undefined>(
     undefined
   )
@@ -46,8 +50,12 @@ export default function usePhAddressQuery() {
       return axios.get<Region[]>('https://psgc.gitlab.io/api/regions/')
     },
   })
+
+  const regions = regionsQuery.data?.data ?? []
   const findRegionByCode = (code: string) =>
-    regionsQuery.data?.data.find((r) => r.code === code)
+    regions.find((r) => r.code === code)
+  const setRegionByCode = (code: string) =>
+    setSelectedRegion(findRegionByCode(code))
 
   const [selectedCity, setSelectedCity] = useState<City | undefined>(undefined)
   const citiesQuery = useQuery({
@@ -59,8 +67,9 @@ export default function usePhAddressQuery() {
       )
     },
   })
-  const findCityByCode = (code: string) =>
-    citiesQuery.data?.data.find((c) => c.code === code)
+  const cities = citiesQuery.data?.data ?? []
+  const findCityByCode = (code: string) => cities.find((c) => c.code === code)
+  const setCityByCode = (code: string) => setSelectedCity(findCityByCode(code))
 
   const [selectedBarangay, setSelectedBarangay] = useState<
     Barangay | undefined
@@ -74,8 +83,11 @@ export default function usePhAddressQuery() {
       )
     },
   })
+  const barangays = brgysQuery.data?.data ?? []
   const findBrgyByCode = (code: string) =>
-    brgysQuery.data?.data.find((b) => b.code === code)
+    barangays.find((b) => b.code === code)
+  const setBrgyByCode = (code: string) =>
+    setSelectedBarangay(findBrgyByCode(code))
 
   const [subdivisionOrVillage, setSubdivisionOrVillage] = useState<
     string | undefined
@@ -97,19 +109,25 @@ export default function usePhAddressQuery() {
 
   const fullAddress = constructFullAddress()
 
+  useEffect(() => {
+    if (options.onFullAddressChange) {
+      options.onFullAddressChange(fullAddress)
+    }
+  }, [fullAddress, options])
+
   return {
     regionsQuery,
     citiesQuery,
     brgysQuery,
     selectedRegion,
     setSelectedRegion,
-    regions: regionsQuery.data?.data ?? [],
+    regions,
     selectedCity,
     setSelectedCity,
-    cities: citiesQuery.data?.data ?? [],
+    cities,
     selectedBarangay,
     setSelectedBarangay,
-    barangays: brgysQuery.data?.data ?? [],
+    barangays,
     subdivisionOrVillage,
     setSubdivisionOrVillage,
     streetOrBuilding,
@@ -119,6 +137,9 @@ export default function usePhAddressQuery() {
     findRegionByCode,
     findCityByCode,
     findBrgyByCode,
+    setRegionByCode,
+    setCityByCode,
+    setBrgyByCode,
     fullAddress,
   }
 }

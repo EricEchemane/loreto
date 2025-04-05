@@ -23,9 +23,7 @@ export default function Test() {
       <Select
         disabled={ctrl.regionsQuery.isPending}
         value={ctrl.selectedRegion?.code}
-        onValueChange={(code) =>
-          ctrl.setSelectedRegion(ctrl.findRegionByCode(code))
-        }
+        onValueChange={ctrl.setRegionByCode}
       >
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='Select Region' />
@@ -46,9 +44,7 @@ export default function Test() {
       <Select
         disabled={ctrl.citiesQuery.isPending}
         value={ctrl.selectedCity?.code}
-        onValueChange={(code) =>
-          ctrl.setSelectedCity(ctrl.findCityByCode(code))
-        }
+        onValueChange={ctrl.setCityByCode}
       >
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='Select City' />
@@ -69,9 +65,7 @@ export default function Test() {
       <Select
         disabled={ctrl.brgysQuery.isPending}
         value={ctrl.selectedBarangay?.code}
-        onValueChange={(code) =>
-          ctrl.setSelectedBarangay(ctrl.findBrgyByCode(code))
-        }
+        onValueChange={ctrl.setBrgyByCode}
       >
         <SelectTrigger className='w-[180px]'>
           <SelectValue placeholder='Select Brgy.' />
