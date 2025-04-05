@@ -8,6 +8,8 @@ import {
   AuditAffectedTable,
   BookingStatus,
 } from '@/common/enums/enums.db'
+import { emailTransporter } from '@/common/services/email'
+import { format } from 'date-fns'
 import { getServerSession } from 'next-auth'
 import { notFound } from 'next/navigation'
 
@@ -39,6 +41,7 @@ export async function updateBookingStatus(id: string, status: number) {
     await prisma.$transaction(async (tx) => {
       const old = await tx.booking.findUnique({
         where: { id },
+        include: { booker: true },
       })
 
       if (!old) {
@@ -48,6 +51,36 @@ export async function updateBookingStatus(id: string, status: number) {
       const updated = await tx.booking.update({
         where: { id },
         data: { status },
+      })
+
+      await emailTransporter.sendMail({
+        from: 'noreply@loretotrading',
+        sender: 'noreply@loretotrading',
+        cc: ['eechemane29@gmail.com'],
+        to: old.booker.email,
+        subject: `Your booking has been updated.`,
+        html: `
+          <div style="margin: 2rem auto; max-width: 600px; padding: 1.5rem; font-family: sans-serif; border: 1px solid purple; border-radius: 2rem;">
+            <h2>
+              <strong>Dear ${old.booker.firstName},</strong>
+            </h2>  
+
+            <p> Your booking schedule on ${format(
+              old.pickupDate,
+              'dd MMMM yyyy'
+            )} has been updated from ${
+          BookingStatusTexts[old.status as BookingStatus]
+        } to <strong>${
+          BookingStatusTexts[updated.status as BookingStatus]
+        }</strong>. </p>
+
+            <div>
+              <a href="http://loreto.vercel.app/me/bookings">
+                <button>See Details</button>
+              </a>
+            </div>
+          </div>
+        `,
       })
 
       await tx.auditLog.create({
