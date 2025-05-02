@@ -97,9 +97,7 @@ export default function BoxQuotation(props: Props) {
                   </div>
                   <div>
                     <SlidingNumber
-                      value={
-                        +getPricePerInch(props.controls.boxThickness).toFixed(2)
-                      }
+                      value={+getPricePerInch(props.controls.boxThickness)}
                     />
                   </div>
 
