@@ -290,6 +290,7 @@ model Apartment {
   area Float
 
   ApartmentInquiry ApartmentInquiry[]
+  Tenant           Tenant[]
 }
 
 model ApartmentInquiry {
@@ -307,6 +308,26 @@ model ApartmentInquiry {
   // 1 Responded
   // 2 Closed
   remarks                 String?
+
+  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartmentId String
+}
+
+model Tenant {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  modifiedAt DateTime @updatedAt
+
+  firstName     String
+  lastName      String
+  email         String
+  contactNumber String
+  startingDate  DateTime
+
+  status Int @default(0)
+  // Active
+  // Inactive
+  // Archived
 
   apartment   Apartment @relation(fields: [apartmentId], references: [id])
   apartmentId String
