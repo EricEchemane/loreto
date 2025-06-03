@@ -5,22 +5,28 @@ import FormItem from '@/components/shared/forms/FormItem'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
-import { TNewTenant } from '../tenants-action'
+import { addNewTenant, TNewTenant } from '../tenants-action'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export default function NewTenantPage() {
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubmit = (formtData: FormData) => {
+  const router = useRouter()
+  const handleSubmit = async (fd: FormData) => {
     const payload: TNewTenant = {
-      firstName: '',
-      lastName: '',
-      contactNumber: '',
-      moveInDate: '',
-      monthlyDueDate: 0,
-      monthlyPayment: 0,
+      firstName: fd.get('first_name') as string,
+      lastName: fd.get('last_name') as string,
+      contactNumber: fd.get('contact_number') as string,
+      moveInDate: fd.get('movein_date') as string,
+      monthlyDueDate: +(fd.get('monthly_due_date') as string),
+      monthlyPayment: +(fd.get('monthly_payment') as string),
     }
+    const added = await addNewTenant(payload)
+    if (!added) {
+      toast.error('Something went wrong. Please try again.')
+      return
+    }
+    router.replace('/dashboard/tenants')
   }
 
   return (

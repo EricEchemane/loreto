@@ -2,6 +2,9 @@
 
 import { DataTable } from '@/components/shared/DataTable'
 import { TGetTenants } from './tenants-action'
+import { format } from 'date-fns'
+import { pesos } from '@/lib/utils'
+import TenantStatusUpdater from './TenantStatus'
 
 interface Props {
   tenants: TGetTenants
@@ -10,8 +13,43 @@ interface Props {
 export default function TenantsTable(props: Props) {
   return (
     <DataTable
-      data={[]}
-      columns={[]}
+      data={props.tenants}
+      columns={[
+        {
+          accessorKey: 'firstName',
+          header: 'First Name',
+        },
+        {
+          accessorKey: 'lastName',
+          header: 'Last Name',
+        },
+        {
+          accessorKey: 'contactNumber',
+          header: 'Contact Number',
+        },
+        {
+          accessorKey: 'moveInDate',
+          header: 'Move-in Date',
+          cell: ({ row }) => format(row.original.moveInDate, 'MMMM d, yyyy'),
+        },
+        {
+          accessorKey: 'monthlyPayment',
+          header: 'Monthly Payment',
+          cell: ({ row }) => pesos(row.original.monthlyPayment),
+        },
+        {
+          accessorKey: 'status',
+          header: 'Status',
+          cell: ({ row }) => {
+            return (
+              <TenantStatusUpdater
+                tenantId={row.original.id}
+                status={row.original.status}
+              />
+            )
+          },
+        },
+      ]}
     />
   )
 }

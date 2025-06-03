@@ -290,7 +290,6 @@ model Apartment {
   area Float
 
   ApartmentInquiry ApartmentInquiry[]
-  Tenant           Tenant[]
 }
 
 model ApartmentInquiry {
@@ -329,7 +328,4 @@ model Tenant {
   // Active
   // Inactive
   // Archived
-
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
-  apartmentId String
 }
