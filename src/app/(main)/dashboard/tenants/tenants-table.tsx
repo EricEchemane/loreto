@@ -5,6 +5,8 @@ import { TGetTenants } from './tenants-action'
 import { format } from 'date-fns'
 import { pesos } from '@/lib/utils'
 import TenantStatusUpdater from './TenantStatus'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   tenants: TGetTenants
@@ -46,6 +48,17 @@ export default function TenantsTable(props: Props) {
                 tenantId={row.original.id}
                 status={row.original.status}
               />
+            )
+          },
+        },
+        {
+          id: 'action',
+          header: 'Action',
+          cell: ({ row }) => {
+            return (
+              <Link href={`/dashboard/tenants/${row.original.id}`}>
+                <Button variant={'link'}>Edit</Button>
+              </Link>
             )
           },
         },

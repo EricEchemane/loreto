@@ -2,6 +2,7 @@
 
 import { prisma } from '@/common/configs/prisma'
 import { TenantStatus } from '@/common/enums/enums.db'
+import { Tenant } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 
 export async function getTenants() {
@@ -33,6 +34,27 @@ export async function updateTenantStatus(params: {
       status: params.status,
     },
   })
+  revalidatePath('/dashboard/tenants')
+}
+
+export async function updateTenantInfo(
+  tenantId: number,
+  input: Partial<Tenant>
+) {
+  if (input.moveInDate) {
+    await prisma.tenant.update({
+      where: { id: tenantId },
+      data: {
+        ...input,
+        moveInDate: new Date(input.moveInDate),
+      },
+    })
+  } else {
+    await prisma.tenant.update({
+      where: { id: tenantId },
+      data: input,
+    })
+  }
   revalidatePath('/dashboard/tenants')
 }
 
