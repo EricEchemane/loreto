@@ -25,7 +25,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
-import { Eye, EyeIcon, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -124,7 +124,7 @@ export default function SignUpPage() {
             />
           </FormItem>
           <FormItem
-            title='Create Password'
+            title='Create Password (minimum of 6 characters)'
             error={errors?.password?.message}
           >
             <div className='flex items-center gap-1'>
